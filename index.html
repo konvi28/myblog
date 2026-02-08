@@ -1063,7 +1063,7 @@ const app = initializeApp(firebaseConfig);
         // Admin access (Ctrl+Shift+A)
         function initializeAdminAccess() {
             document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                if (e.ctrlKey && e.shiftKey && e.key === 'Z') {
                     e.preventDefault();
                     if (!window.isAdminLoggedIn) {
                         showLogin();
