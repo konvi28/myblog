@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поетичні роздуми</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #8b6f47;
+            --accent-light: #b8956a;
+            --bg-main: #faf8f3;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-light: #666666;
+            --border: #e8e4dc;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Decorative Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(139, 111, 71, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 111, 71, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-main) 100%);
+            border-bottom: 2px solid var(--border);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        header h1 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .header-ornament {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 1.5rem auto;
+        }
+
+        /* Admin Button - Hidden */
+        .admin-toggle {
+            display: none;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .login-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-content {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: scaleIn 0.3s ease;
+        }
+
+        .login-content h2 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .login-error {
+            color: #c0392b;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .admin-panel.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-content {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.3s ease;
+        }
+
+        .admin-content h2 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            background: var(--bg-main);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+        }
+
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #d8d4cc;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 10px 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            gap: 2.5rem;
+        }
+
+        .post-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.6s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px var(--shadow);
+        }
+
+        .post-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .post-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent-light);
+            color: white;
+            border-radius: 15px;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .post-card h2 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .post-date {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+            font-style: italic;
+        }
+
+        .post-content {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: var(--text-main);
+            white-space: pre-wrap;
+        }
+
+        .post-content.poetry {
+            font-style: italic;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .post-actions {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: none;
+            gap: 1rem;
+        }
+
+        .post-actions.show {
+            display: flex;
+        }
+
+        .btn-delete,
+        .btn-edit {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: var(--accent-light);
+            color: white;
+        }
+
+        .btn-delete {
+            background: #c0392b;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: var(--accent);
+        }
+
+        .btn-delete:hover {
+            background: #a93226;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state h3 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 2px solid var(--border);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header p {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .post-card {
+                padding: 1.5rem;
+            }
+
+            .admin-content {
+                padding: 2rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .admin-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Поетичні роздуми</h1>
+        <div class="header-ornament"></div>
+        <p>Де слова стають музикою душі</p>
+    </header>
+
+    <div class="container">
+        <div class="filter-tabs">
+            <div class="filter-tab active" data-filter="all">Усі</div>
+            <div class="filter-tab" data-filter="poetry">Поезія</div>
+            <div class="filter-tab" data-filter="thought">Думки</div>
+        </div>
+
+        <div class="posts-grid" id="postsGrid">
+            <!-- Posts will be rendered here -->
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Поетичні роздуми. Створено з любов'ю до слова.</p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <h2>🔒 Вхід</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminPassword">Пароль адміністратора</label>
+                    <input type="password" id="adminPassword" placeholder="Введіть пароль..." required>
+                    <div class="login-error" id="loginError">Невірний пароль</div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Увійти</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeLogin()">Скасувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-content">
+            <h2 id="adminTitle">Створити публікацію</h2>
+            <form id="postForm">
+                <input type="hidden" id="editId">
+                
+                <div class="form-group">
+                    <label for="postType">Тип публікації</label>
+                    <select id="postType" required>
+                        <option value="poetry">Поезія</option>
+                        <option value="thought">Думка</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="postTitle">Заголовок</label>
+                    <input type="text" id="postTitle" placeholder="Введіть заголовок..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="postContent">Текст</label>
+                    <textarea id="postContent" placeholder="Ваші думки або поезія..." required></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Опублікувати</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAdmin()">Скасувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Admin password (змініть на свій власний пароль)
+        const ADMIN_PASSWORD = 'mypoetry2026';
+        
+        // Data structure
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+        let currentFilter = 'all';
+        let editingId = null;
+        let isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPosts();
+            initializeFilters();
+            initializeAdminAccess();
+        });
+
+        // Admin access via keyboard shortcut (Ctrl+Shift+A)
+        function initializeAdminAccess() {
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    e.preventDefault();
+                    if (!isAdminLoggedIn) {
+                        showLogin();
+                    } else {
+                        toggleAdmin();
+                    }
+                }
+            });
+        }
+
+        // Login functionality
+        function showLogin() {
+            document.getElementById('loginModal').classList.add('active');
+            document.getElementById('adminPassword').focus();
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginError').classList.remove('show');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                closeLogin();
+                toggleAdmin();
+            } else {
+                document.getElementById('loginError').classList.add('show');
+                document.getElementById('adminPassword').value = '';
+            }
+        });
+
+        // Close login on background click
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target.id === 'loginModal') {
+                closeLogin();
+            }
+        });
+
+        // Filter functionality
+        function initializeFilters() {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.dataset.filter;
+                    renderPosts();
+                });
+            });
+        }
+
+        // Render posts
+        function renderPosts() {
+            const grid = document.getElementById('postsGrid');
+            const filteredPosts = currentFilter === 'all' 
+                ? posts 
+                : posts.filter(post => post.type === currentFilter);
+
+            if (filteredPosts.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Поки що немає публікацій</h3>
+                        <p>${isAdminLoggedIn ? 'Натисніть Ctrl+Shift+A щоб створити першу публікацію' : 'Скоро тут з\'являться нові думки та поезія'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredPosts
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .map(post => `
+                    <div class="post-card" style="animation-delay: ${Math.random() * 0.2}s">
+                        <span class="post-type">${post.type === 'poetry' ? 'Поезія' : 'Думка'}</span>
+                        <h2>${escapeHtml(post.title)}</h2>
+                        <div class="post-date">${formatDate(post.date)}</div>
+                        <div class="post-content ${post.type === 'poetry' ? 'poetry' : ''}">${escapeHtml(post.content)}</div>
+                        <div class="post-actions ${isAdminLoggedIn ? 'show' : ''}">
+                            <button class="btn-edit" onclick="editPost('${post.id}')">Редагувати</button>
+                            <button class="btn-delete" onclick="deletePost('${post.id}')">Видалити</button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        // Admin panel
+        function toggleAdmin() {
+            if (!isAdminLoggedIn) {
+                showLogin();
+                return;
+            }
+            document.getElementById('adminPanel').classList.add('active');
+            resetForm();
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminPanel').classList.remove('active');
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('postForm').reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('adminTitle').textContent = 'Створити публікацію';
+            editingId = null;
+        }
+
+        // Form submission
+        document.getElementById('postForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const type = document.getElementById('postType').value;
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const editId = document.getElementById('editId').value;
+
+            if (editId) {
+                // Edit existing post
+                const index = posts.findIndex(p => p.id === editId);
+                posts[index] = {
+                    ...posts[index],
+                    type,
+                    title,
+                    content
+                };
+            } else {
+                // Create new post
+                const newPost = {
+                    id: Date.now().toString(),
+                    type,
+                    title,
+                    content,
+                    date: new Date().toISOString()
+                };
+                posts.unshift(newPost);
+            }
+
+            localStorage.setItem('posts', JSON.stringify(posts));
+            renderPosts();
+            closeAdmin();
+        });
+
+        // Edit post
+        function editPost(id) {
+            if (!isAdminLoggedIn) return;
+            
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+
+            document.getElementById('editId').value = post.id;
+            document.getElementById('postType').value = post.type;
+            document.getElementById('postTitle').value = post.title;
+            document.getElementById('postContent').value = post.content;
+            document.getElementById('adminTitle').textContent = 'Редагувати публікацію';
+
+            toggleAdmin();
+        }
+
+        // Delete post
+        function deletePost(id) {
+            if (!isAdminLoggedIn) return;
+            if (!confirm('Ви впевнені, що хочете видалити цю публікацію?')) return;
+
+            posts = posts.filter(p => p.id !== id);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            renderPosts();
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const months = [
+                'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',
+                'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'
+            ];
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close admin panel on background click
+        document.getElementById('adminPanel').addEventListener('click', (e) => {
+            if (e.target.id === 'adminPanel') {
+                closeAdmin();
+            }
+        });
+    </script>
+</body>
+</html>
