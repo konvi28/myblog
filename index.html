@@ -206,6 +206,13 @@
             margin-bottom: 1rem;
         }
 
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
         footer {
             text-align: center;
             padding: 3rem 2rem;
@@ -721,6 +728,27 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
+        .firebase-notice {
+            background: #e8f4fd;
+            border: 1px solid #2271b1;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .firebase-notice h3 {
+            color: #2271b1;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .firebase-notice p {
+            color: #1d2327;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -799,7 +827,9 @@
                 <div class="filter-tab" data-filter="thought">Думки</div>
             </div>
 
-            <div class="posts-grid" id="postsGrid"></div>
+            <div class="posts-grid" id="postsGrid">
+                <div class="loading">Завантаження публікацій...</div>
+            </div>
         </div>
 
         <footer>
@@ -853,6 +883,12 @@
 
             <div class="admin-content">
                 <div class="admin-content-inner">
+                    <!-- Firebase Setup Notice -->
+                    <div class="firebase-notice" id="firebaseNotice" style="display: none;">
+                        <h3>⚠️ Налаштування Firebase</h3>
+                        <p>Для роботи сайту потрібно налаштувати Firebase. Дивіться інструкції нижче.</p>
+                    </div>
+
                     <!-- ALL POSTS VIEW -->
                     <div id="allPostsView">
                         <div class="admin-page-header">
@@ -873,7 +909,9 @@
                                 </div>
                             </div>
 
-                            <div id="postsTableContainer"></div>
+                            <div id="postsTableContainer">
+                                <div class="loading" style="padding: 2rem;">Завантаження...</div>
+                            </div>
                         </div>
                     </div>
 
@@ -917,15 +955,95 @@
         </div>
     </div>
 
-    <script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        // ВАЖЛИВО: Замініть ці дані на ваші з Firebase Console
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, get, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // TODO: Замініть на ваші дані з Firebase Console
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        let app, database;
+        let isFirebaseConfigured = false;
+
+        try {
+            if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+                app = initializeApp(firebaseConfig);
+                database = getDatabase(app);
+                isFirebaseConfigured = true;
+            } else {
+                console.warn('Firebase not configured. Using localStorage as fallback.');
+                document.getElementById('firebaseNotice').style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            isFirebaseConfigured = false;
+        }
+
+        // Global variables
+        window.posts = [];
+        window.currentFilter = 'all';
+        window.currentAdminFilter = 'all';
+        window.isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
         const ADMIN_PASSWORD = 'mypoetry2026';
-        let posts = JSON.parse(localStorage.getItem('posts')) || [];
-        let currentFilter = 'all';
-        let currentAdminFilter = 'all';
-        let isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+
+        // Database functions
+        async function savePosts(posts) {
+            if (isFirebaseConfigured) {
+                try {
+                    await set(ref(database, 'posts'), posts);
+                } catch (error) {
+                    console.error('Error saving to Firebase:', error);
+                    alert('Помилка збереження. Перевірте налаштування Firebase.');
+                }
+            } else {
+                localStorage.setItem('posts', JSON.stringify(posts));
+            }
+        }
+
+        async function loadPosts() {
+            if (isFirebaseConfigured) {
+                try {
+                    const snapshot = await get(ref(database, 'posts'));
+                    if (snapshot.exists()) {
+                        return snapshot.val();
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('Error loading from Firebase:', error);
+                    return [];
+                }
+            } else {
+                return JSON.parse(localStorage.getItem('posts') || '[]');
+            }
+        }
+
+        // Real-time updates
+        if (isFirebaseConfigured) {
+            onValue(ref(database, 'posts'), (snapshot) => {
+                if (snapshot.exists()) {
+                    window.posts = snapshot.val();
+                    renderPublicPosts();
+                    if (window.isAdminLoggedIn) {
+                        renderAdminPosts();
+                    }
+                }
+            });
+        }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            window.posts = await loadPosts();
             renderPublicPosts();
             initializePublicFilters();
             initializeAdminAccess();
@@ -936,7 +1054,7 @@
             document.addEventListener('keydown', (e) => {
                 if (e.ctrlKey && e.shiftKey && e.key === 'A') {
                     e.preventDefault();
-                    if (!isAdminLoggedIn) {
+                    if (!window.isAdminLoggedIn) {
                         showLogin();
                     } else {
                         showAdminPanel();
@@ -946,12 +1064,12 @@
         }
 
         // Login
-        function showLogin() {
+        window.showLogin = function() {
             document.getElementById('loginModal').classList.add('active');
             document.getElementById('adminPassword').focus();
         }
 
-        function closeLogin() {
+        window.closeLogin = function() {
             document.getElementById('loginModal').classList.remove('active');
             document.getElementById('loginForm').reset();
             document.getElementById('loginError').classList.remove('show');
@@ -962,7 +1080,7 @@
             const password = document.getElementById('adminPassword').value;
             
             if (password === ADMIN_PASSWORD) {
-                isAdminLoggedIn = true;
+                window.isAdminLoggedIn = true;
                 sessionStorage.setItem('adminLoggedIn', 'true');
                 closeLogin();
                 showAdminPanel();
@@ -979,27 +1097,28 @@
         });
 
         // Admin Panel
-        function showAdminPanel() {
+        window.showAdminPanel = async function() {
             document.getElementById('publicSite').style.display = 'none';
             document.getElementById('adminPanel').classList.add('active');
+            window.posts = await loadPosts();
             showAllPosts();
         }
 
-        function viewSite() {
+        window.viewSite = function() {
             document.getElementById('adminPanel').classList.remove('active');
             document.getElementById('publicSite').style.display = 'block';
             renderPublicPosts();
         }
 
-        function logout() {
-            isAdminLoggedIn = false;
+        window.logout = function() {
+            window.isAdminLoggedIn = false;
             sessionStorage.removeItem('adminLoggedIn');
             document.getElementById('adminPanel').classList.remove('active');
             document.getElementById('publicSite').style.display = 'block';
         }
 
         // Admin Views
-        function showAllPosts(e) {
+        window.showAllPosts = function(e) {
             if (e) e.preventDefault();
             document.getElementById('allPostsView').style.display = 'block';
             document.getElementById('editorView').style.display = 'none';
@@ -1011,7 +1130,7 @@
             initializeAdminTabs();
         }
 
-        function showNewPost(e) {
+        window.showNewPost = function(e) {
             if (e) e.preventDefault();
             document.getElementById('allPostsView').style.display = 'none';
             document.getElementById('editorView').style.display = 'block';
@@ -1028,7 +1147,7 @@
             document.getElementById('editPostId').value = '';
         }
 
-        function cancelEditor() {
+        window.cancelEditor = function() {
             showAllPosts();
         }
 
@@ -1039,7 +1158,7 @@
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    currentAdminFilter = tab.dataset.filter;
+                    window.currentAdminFilter = tab.dataset.filter;
                     renderAdminPosts();
                 });
             });
@@ -1048,14 +1167,14 @@
         // Render Admin Posts
         function renderAdminPosts() {
             const container = document.getElementById('postsTableContainer');
-            const filteredPosts = currentAdminFilter === 'all' 
-                ? posts 
-                : posts.filter(post => post.type === currentAdminFilter);
+            const filteredPosts = window.currentAdminFilter === 'all' 
+                ? window.posts 
+                : window.posts.filter(post => post.type === window.currentAdminFilter);
 
             // Update counts
-            document.getElementById('countAll').textContent = posts.length;
-            document.getElementById('countPoetry').textContent = posts.filter(p => p.type === 'poetry').length;
-            document.getElementById('countThought').textContent = posts.filter(p => p.type === 'thought').length;
+            document.getElementById('countAll').textContent = window.posts.length;
+            document.getElementById('countPoetry').textContent = window.posts.filter(p => p.type === 'poetry').length;
+            document.getElementById('countThought').textContent = window.posts.filter(p => p.type === 'thought').length;
 
             if (filteredPosts.length === 0) {
                 container.innerHTML = `
@@ -1107,7 +1226,7 @@
         }
 
         // Editor Form
-        document.getElementById('editorForm').addEventListener('submit', (e) => {
+        document.getElementById('editorForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const id = document.getElementById('editPostId').value;
@@ -1116,10 +1235,10 @@
             const content = document.getElementById('editorContent').value;
 
             if (id) {
-                const index = posts.findIndex(p => p.id === id);
-                posts[index] = { ...posts[index], type, title, content };
+                const index = window.posts.findIndex(p => p.id === id);
+                window.posts[index] = { ...window.posts[index], type, title, content };
             } else {
-                posts.unshift({
+                window.posts.unshift({
                     id: Date.now().toString(),
                     type,
                     title,
@@ -1128,12 +1247,12 @@
                 });
             }
 
-            localStorage.setItem('posts', JSON.stringify(posts));
+            await savePosts(window.posts);
             showAllPosts();
         });
 
-        function editPostAdmin(id) {
-            const post = posts.find(p => p.id === id);
+        window.editPostAdmin = function(id) {
+            const post = window.posts.find(p => p.id === id);
             if (!post) return;
 
             document.getElementById('editPostId').value = post.id;
@@ -1145,10 +1264,10 @@
             showNewPost();
         }
 
-        function deletePostAdmin(id) {
+        window.deletePostAdmin = async function(id) {
             if (!confirm('Ви впевнені, що хочете видалити цю публікацію?')) return;
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem('posts', JSON.stringify(posts));
+            window.posts = window.posts.filter(p => p.id !== id);
+            await savePosts(window.posts);
             renderAdminPosts();
             renderPublicPosts();
         }
@@ -1160,7 +1279,7 @@
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    currentFilter = tab.dataset.filter;
+                    window.currentFilter = tab.dataset.filter;
                     renderPublicPosts();
                 });
             });
@@ -1168,9 +1287,9 @@
 
         function renderPublicPosts() {
             const grid = document.getElementById('postsGrid');
-            const filteredPosts = currentFilter === 'all' 
-                ? posts 
-                : posts.filter(post => post.type === currentFilter);
+            const filteredPosts = window.currentFilter === 'all' 
+                ? window.posts 
+                : window.posts.filter(post => post.type === window.currentFilter);
 
             if (filteredPosts.length === 0) {
                 grid.innerHTML = `
