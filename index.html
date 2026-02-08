@@ -958,28 +958,19 @@
     <!-- Firebase SDK -->
     <script type="module">
         // ВАЖЛИВО: Замініть ці дані на ваші з Firebase Console
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, get, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        // TODO: Замініть на ваші дані з Firebase Console
-        const firebaseConfig = {
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAFV8kimd0f2dLw3yyQNj3fIyY4_5zCQB0",
+  apiKey: "AIzaSyAFV8k...",
   authDomain: "poetry-blog-ff72f.firebaseapp.com",
   databaseURL: "https://poetry-blog-ff72f-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "poetry-blog-ff72f",
-  storageBucket: "poetry-blog-ff72f.firebasestorage.app",
+  storageBucket: "poetry-blog-ff72f.appspot.com",
   messagingSenderId: "331598419628",
   appId: "1:331598419628:web:d1093b30ab867d3d40b109"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
         };
 
