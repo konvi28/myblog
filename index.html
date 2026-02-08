@@ -1060,19 +1060,17 @@ const app = initializeApp(firebaseConfig);
             initializeAdminAccess();
         });
 
-        // Admin access (Ctrl+Shift+A)
-        function initializeAdminAccess() {
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && e.code === 'KeyZ') {
-                    e.preventDefault();
-                    if (!window.isAdminLoggedIn) {
-                        showLogin();
-                    } else {
-                        showAdminPanel();
-                    }
-                }
-            });
+// Admin access (Ctrl + Shift + Z)
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.code === 'KeyZ') {
+        e.preventDefault();
+        if (!window.isAdminLoggedIn) {
+            showLogin();
+        } else {
+            showAdminPanel();
         }
+    }
+});
 
         // Login
         window.showLogin = function() {
