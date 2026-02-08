@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поетичні роздуми 1.4</title>
+    <title>Поетичні роздуми 1.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -220,6 +220,32 @@
             border-top: 2px solid var(--border);
             color: var(--text-light);
             font-size: 1rem;
+        }
+
+        .admin-login-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            opacity: 0.8;
+        }
+
+        .admin-login-btn:hover {
+            opacity: 1;
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow);
         }
 
         /* LOGIN MODAL */
@@ -835,6 +861,9 @@
         <footer>
             <p>© 2026 Поетичні роздуми. Створено з любов'ю до слова.</p>
         </footer>
+        
+        <!-- Admin Login Button -->
+        <button class="admin-login-btn" onclick="showLogin()" title="Вхід до адмін-панелі">🔐 Адмін</button>
     </div>
 
     <!-- LOGIN MODAL -->
@@ -1057,22 +1086,7 @@ const app = initializeApp(firebaseConfig);
             window.posts = await loadPosts();
             renderPublicPosts();
             initializePublicFilters();
-            initializeAdminAccess();
         });
-
-        // Admin access (Ctrl+Shift+A)
-        function initializeAdminAccess() {
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && e.key === 'Z') {
-                    e.preventDefault();
-                    if (!window.isAdminLoggedIn) {
-                        showLogin();
-                    } else {
-                        showAdminPanel();
-                    }
-                }
-            });
-        }
 
         // Login
         window.showLogin = function() {
