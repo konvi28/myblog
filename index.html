@@ -50,7 +50,7 @@
         header {
             position: relative;
             text-align: center;
-            padding: 4rem 2rem 3rem;
+            padding: 4rem 2rem 1.5rem;
             background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-main) 100%);
             border-bottom: 2px solid var(--border);
             animation: fadeInDown 1s ease-out;
@@ -81,7 +81,7 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 1.5rem 2rem 3rem;
             position: relative;
             z-index: 1;
         }
@@ -182,10 +182,11 @@
         }
 
         .post-content {
-            font-size: 1.2rem;
-            line-height: 2;
+            font-size: 1.15rem;
+            line-height: 1.75;
             color: var(--text-main);
             white-space: pre-wrap;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         .post-content.poetry {
@@ -215,37 +216,39 @@
 
         footer {
             text-align: center;
-            padding: 3rem 2rem;
+            padding: 3rem 2rem 5rem;
             margin-top: 4rem;
             border-top: 2px solid var(--border);
             color: var(--text-light);
             font-size: 1rem;
+            position: relative;
         }
 
         .admin-login-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--accent);
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #999;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 30px;
+            padding: 6px 16px;
+            border-radius: 15px;
             cursor: pointer;
-            font-family: 'Philosopher', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 700;
-            box-shadow: 0 4px 12px var(--shadow);
-            transition: all 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
             z-index: 1000;
-            opacity: 0.8;
+            opacity: 0.6;
         }
 
         .admin-login-btn:hover {
-            opacity: 1;
-            background: var(--accent-light);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--shadow);
+            opacity: 0.9;
+            background: #777;
+            transform: translateX(-50%) translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
         }
 
         /* LOGIN MODAL */
@@ -860,10 +863,8 @@
 
         <footer>
             <p>© 2026 Поетичні роздуми. Створено з любов'ю до слова.</p>
+            <button class="admin-login-btn" onclick="showLogin()" title="Вхід до адмін-панелі">Адмін</button>
         </footer>
-        
-        <!-- Admin Login Button -->
-        <button class="admin-login-btn" onclick="showLogin()" title="Вхід до адмін-панелі">🔐 Адмін</button>
     </div>
 
     <!-- LOGIN MODAL -->
