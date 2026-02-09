@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поетичні роздуми 1.7</title>
+    <title>Поетичні роздуми 1.8</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -84,6 +84,178 @@
             padding: 1.5rem 2rem 3rem;
             position: relative;
             z-index: 1;
+        }
+
+        /* Table of Contents */
+        .toc-container {
+            position: sticky;
+            top: 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .toc-header {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc-toggle {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            margin-left: auto;
+        }
+
+        .toc-list {
+            list-style: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .toc-list.collapsed {
+            display: none;
+        }
+
+        .toc-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .toc-link:hover {
+            background: var(--accent-light);
+            color: white;
+            padding-left: 1rem;
+        }
+
+        .toc-type {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-right: 0.5rem;
+            background: var(--bg-main);
+            color: var(--text-light);
+        }
+
+        .toc-type.poetry {
+            background: #e8f4fd;
+            color: #2271b1;
+        }
+
+        .toc-type.thought {
+            background: #fef8e7;
+            color: #8b6f47;
+        }
+
+        /* Hashtags */
+        .post-hashtags {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .hashtag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--bg-main);
+            color: var(--accent);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .hashtag:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .hashtag-filter-container {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .hashtag-filter-label {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .hashtag-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .hashtag-filter {
+            padding: 4px 12px;
+            background: var(--bg-main);
+            border: 2px solid var(--border);
+            color: var(--text-light);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hashtag-filter:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .hashtag-filter.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .clear-hashtag-filter {
+            padding: 4px 12px;
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .clear-hashtag-filter:hover {
+            color: var(--accent-light);
         }
 
         .filter-tabs {
@@ -947,6 +1119,21 @@
                 <button class="font-size-btn" onclick="changeFontSize('large')" data-size="large">А</button>
             </div>
 
+            <!-- Hashtag Filter -->
+            <div class="hashtag-filter-container" id="hashtagFilterContainer" style="display: none;">
+                <div class="hashtag-filter-label">Фільтрувати за хештегами:</div>
+                <div class="hashtag-filters" id="hashtagFilters"></div>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc-container" id="tocContainer" style="display: none;">
+                <div class="toc-header">
+                    📑 Зміст
+                    <button class="toc-toggle" onclick="toggleTOC()" id="tocToggle">▼</button>
+                </div>
+                <ul class="toc-list" id="tocList"></ul>
+            </div>
+
             <div class="posts-grid" id="postsGrid">
                 <div class="loading">Завантаження публікацій...</div>
             </div>
@@ -1064,6 +1251,12 @@
                                     <textarea id="editorContent" placeholder="Ваші думки або поезія..." required></textarea>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="editorHashtags">Хештеги (через кому)</label>
+                                    <input type="text" id="editorHashtags" placeholder="наприклад: любов, природа, роздуми">
+                                    <small style="color: #646970; font-size: 0.85rem; display: block; margin-top: 0.25rem;">Розділяйте хештеги комами. Приклад: весна, любов, душа</small>
+                                </div>
+
                                 <div class="editor-actions">
                                     <button type="submit" class="btn-publish">Опублікувати</button>
                                     <button type="button" class="btn-cancel" onclick="cancelEditor()">Скасувати</button>
@@ -1114,6 +1307,7 @@
         window.posts = [];
         window.currentFilter = 'all';
         window.currentAdminFilter = 'all';
+        window.currentHashtagFilter = null;
         window.isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
         const ADMIN_PASSWORD = 'mypoetry2026';
 
@@ -1370,16 +1564,22 @@
             const type = document.getElementById('editorType').value;
             const title = document.getElementById('editorTitleInput').value;
             const content = document.getElementById('editorContent').value;
+            const hashtagsInput = document.getElementById('editorHashtags').value;
+            const hashtags = hashtagsInput
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag.length > 0);
 
             if (id) {
                 const index = window.posts.findIndex(p => p.id === id);
-                window.posts[index] = { ...window.posts[index], type, title, content };
+                window.posts[index] = { ...window.posts[index], type, title, content, hashtags };
             } else {
                 window.posts.unshift({
                     id: Date.now().toString(),
                     type,
                     title,
                     content,
+                    hashtags,
                     date: new Date().toISOString()
                 });
             }
@@ -1396,6 +1596,7 @@
             document.getElementById('editorType').value = post.type;
             document.getElementById('editorTitleInput').value = post.title;
             document.getElementById('editorContent').value = post.content;
+            document.getElementById('editorHashtags').value = post.hashtags ? post.hashtags.join(', ') : '';
             document.getElementById('editorTitle').textContent = 'Редагувати публікацію';
 
             showNewPost();
@@ -1424,9 +1625,16 @@
 
         function renderPublicPosts() {
             const grid = document.getElementById('postsGrid');
-            const filteredPosts = window.currentFilter === 'all' 
+            let filteredPosts = window.currentFilter === 'all' 
                 ? window.posts 
                 : window.posts.filter(post => post.type === window.currentFilter);
+
+            // Filter by hashtag if selected
+            if (window.currentHashtagFilter) {
+                filteredPosts = filteredPosts.filter(post => 
+                    post.hashtags && post.hashtags.includes(window.currentHashtagFilter)
+                );
+            }
 
             if (filteredPosts.length === 0) {
                 grid.innerHTML = `
@@ -1435,24 +1643,120 @@
                         <p>Скоро тут з'являться нові думки та поезія</p>
                     </div>
                 `;
+                document.getElementById('tocContainer').style.display = 'none';
+                document.getElementById('hashtagFilterContainer').style.display = 'none';
                 return;
             }
 
-            grid.innerHTML = filteredPosts
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .map(post => `
-                    <div class="post-card">
+            const sortedPosts = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            grid.innerHTML = sortedPosts
+                .map((post, index) => `
+                    <div class="post-card" id="post-${post.id}">
                         <span class="post-type">${post.type === 'poetry' ? 'Поезія' : 'Думка'}</span>
                         <h2>${escapeHtml(post.title)}</h2>
                         <div class="post-date">${formatDate(post.date)}</div>
                         <div class="post-content ${post.type === 'poetry' ? 'poetry' : ''}">${escapeHtml(post.content)}</div>
+                        ${post.hashtags && post.hashtags.length > 0 ? `
+                            <div class="post-hashtags">
+                                ${post.hashtags.map(tag => `
+                                    <span class="hashtag" onclick="filterByHashtag('${escapeHtml(tag)}')">#${escapeHtml(tag)}</span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
                     </div>
                 `).join('');
             
             // Apply saved font size
             const savedSize = localStorage.getItem('fontSize') || 'medium';
             applyFontSize(savedSize);
+
+            // Build Table of Contents
+            buildTOC(sortedPosts);
+
+            // Build Hashtag Filter
+            buildHashtagFilter();
         }
+
+        function buildTOC(posts) {
+            const tocList = document.getElementById('tocList');
+            const tocContainer = document.getElementById('tocContainer');
+
+            if (posts.length === 0) {
+                tocContainer.style.display = 'none';
+                return;
+            }
+
+            tocContainer.style.display = 'block';
+            tocList.innerHTML = posts.map(post => `
+                <li class="toc-item">
+                    <a href="#post-${post.id}" class="toc-link">
+                        <span class="toc-type ${post.type}">${post.type === 'poetry' ? 'П' : 'Д'}</span>
+                        ${escapeHtml(post.title)}
+                    </a>
+                </li>
+            `).join('');
+
+            // Smooth scroll
+            document.querySelectorAll('.toc-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+
+        function buildHashtagFilter() {
+            const hashtagFilters = document.getElementById('hashtagFilters');
+            const hashtagFilterContainer = document.getElementById('hashtagFilterContainer');
+
+            // Collect all unique hashtags
+            const allHashtags = new Set();
+            window.posts.forEach(post => {
+                if (post.hashtags) {
+                    post.hashtags.forEach(tag => allHashtags.add(tag));
+                }
+            });
+
+            if (allHashtags.size === 0) {
+                hashtagFilterContainer.style.display = 'none';
+                return;
+            }
+
+            hashtagFilterContainer.style.display = 'block';
+            hashtagFilters.innerHTML = `
+                <button class="clear-hashtag-filter" onclick="clearHashtagFilter()" style="${window.currentHashtagFilter ? '' : 'display:none;'}" id="clearHashtagBtn">✕ Очистити фільтр</button>
+                ${Array.from(allHashtags).sort().map(tag => `
+                    <span class="hashtag-filter ${window.currentHashtagFilter === tag ? 'active' : ''}" onclick="filterByHashtag('${escapeHtml(tag)}')">#${escapeHtml(tag)}</span>
+                `).join('')}
+            `;
+        }
+
+        window.filterByHashtag = function(tag) {
+            if (window.currentHashtagFilter === tag) {
+                window.currentHashtagFilter = null;
+            } else {
+                window.currentHashtagFilter = tag;
+            }
+            renderPublicPosts();
+        };
+
+        window.clearHashtagFilter = function() {
+            window.currentHashtagFilter = null;
+            renderPublicPosts();
+        };
+
+        window.toggleTOC = function() {
+            const tocList = document.getElementById('tocList');
+            const tocToggle = document.getElementById('tocToggle');
+            
+            tocList.classList.toggle('collapsed');
+            tocToggle.textContent = tocList.classList.contains('collapsed') ? '▶' : '▼';
+        };
 
         // Utility
         function formatDate(dateString) {
