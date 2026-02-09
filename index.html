@@ -129,6 +129,21 @@
             gap: 1rem;
         }
 
+		.header-controls {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    transition: all 0.35s ease;
+}
+		header.expanded .header-controls {
+    max-height: 500px; /* достатньо для всього вмісту */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    opacity: 1;
+}
+		
         .header-toggle {
             position: absolute;
             bottom: -15px;
@@ -2273,6 +2288,8 @@ document.addEventListener('DOMContentLoaded', () => {
     header.classList.remove('expanded');
     toggleBtn.textContent = '▼';
 });
+
+		
 </script>
 </body>
 </html>
