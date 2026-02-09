@@ -2261,6 +2261,13 @@ function toggleHeader() {
         toggleBtn.textContent = '▼';
     }
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('siteHeader');
+    const toggleBtn = document.getElementById('headerToggle');
+
+    header.classList.remove('expanded');
+    toggleBtn.textContent = '▼';
+});
 </script>
 </body>
 </html>
