@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поетичні роздуми 1.9</title>
+    <title>Поетичні роздуми 2.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -301,6 +301,83 @@
             max-width: 300px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        /* Search Box */
+        .search-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            background: var(--bg-card);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .clear-search-btn {
+            padding: 10px 20px;
+            background: var(--border);
+            color: var(--text-main);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .clear-search-btn:hover {
+            background: #d8d4cc;
+        }
+
+        .search-results-info {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .search-results-info strong {
+            color: var(--accent);
         }
 
         .font-size-label {
@@ -938,6 +1015,68 @@
             color: #8b6f47;
         }
 
+        .post-hashtags-admin {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-top: 0.5rem;
+        }
+
+        .hashtag-admin {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--bg-main);
+            color: var(--accent);
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hashtag-admin:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Admin Search */
+        .admin-search-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .admin-search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #8c8f94;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .admin-search-input:focus {
+            outline: none;
+            border-color: #2271b1;
+            box-shadow: 0 0 0 1px #2271b1;
+        }
+
+        .admin-search-btn {
+            padding: 8px 16px;
+            background: #2271b1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: all 0.2s;
+        }
+
+        .admin-search-btn:hover {
+            background: #135e96;
+        }
+
         .editor-container {
             background: white;
             border: 1px solid #c3c4c7;
@@ -1137,6 +1276,16 @@
         </header>
 
         <div class="container">
+            <!-- Search Box -->
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="🔍 Пошук публікацій...">
+                    <button class="search-btn" onclick="searchPosts()">Знайти</button>
+                    <button class="clear-search-btn" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✕</button>
+                </div>
+            </div>
+            <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
+
             <div class="filter-tabs">
                 <div class="filter-tab active" data-filter="all">Усі</div>
                 <div class="filter-tab" data-filter="poetry">Поезія</div>
@@ -1234,6 +1383,13 @@
                         <div class="admin-page-header">
                             <h2>Публікації</h2>
                             <button class="btn-add-new" onclick="showNewPost(event)">➕ Додати нову</button>
+                        </div>
+
+                        <!-- Admin Search -->
+                        <div class="admin-search-box">
+                            <input type="text" class="admin-search-input" id="adminSearchInput" placeholder="🔍 Пошук за заголовком, текстом або хештегами...">
+                            <button class="admin-search-btn" onclick="searchAdminPosts()">Знайти</button>
+                            <button class="admin-search-btn" onclick="clearAdminSearch()" id="clearAdminSearchBtn" style="display: none; background: #f0f0f1; color: #2c3338;">✕</button>
                         </div>
 
                         <div class="admin-tabs">
@@ -1340,6 +1496,8 @@
         window.currentFilter = 'all';
         window.currentAdminFilter = 'all';
         window.currentHashtagFilter = null;
+        window.searchQuery = '';
+        window.adminSearchQuery = '';
         window.isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
         const ADMIN_PASSWORD = 'mypoetry2026';
 
@@ -1536,6 +1694,19 @@
                 ? window.posts 
                 : window.posts.filter(post => post.type === window.currentAdminFilter);
 
+            // Filter by admin search query
+            if (window.adminSearchQuery) {
+                const query = window.adminSearchQuery.toLowerCase();
+                filteredPosts = filteredPosts.filter(post => {
+                    const titleMatch = post.title.toLowerCase().includes(query);
+                    const contentMatch = post.content.toLowerCase().includes(query);
+                    const hashtagMatch = post.hashtags && post.hashtags.some(tag => 
+                        tag.toLowerCase().includes(query)
+                    );
+                    return titleMatch || contentMatch || hashtagMatch;
+                });
+            }
+
             // Update counts
             document.getElementById('countAll').textContent = window.posts.length;
             document.getElementById('countPoetry').textContent = window.posts.filter(p => p.type === 'poetry').length;
@@ -1571,6 +1742,13 @@
                                             <div class="post-title-cell" onclick="editPostAdmin('${post.id}')">
                                                 ${escapeHtml(post.title)}
                                             </div>
+                                            ${post.hashtags && post.hashtags.length > 0 ? `
+                                                <div class="post-hashtags-admin">
+                                                    ${post.hashtags.map(tag => `
+                                                        <span class="hashtag-admin" onclick="filterAdminByHashtag('${escapeHtml(tag)}')">#${escapeHtml(tag)}</span>
+                                                    `).join('')}
+                                                </div>
+                                            ` : ''}
                                             <div class="post-row-actions">
                                                 <a onclick="editPostAdmin('${post.id}')">Редагувати</a>
                                                 <a class="delete" onclick="deletePostAdmin('${post.id}')">Видалити</a>
@@ -1670,11 +1848,31 @@
                 );
             }
 
+            // Filter by search query
+            if (window.searchQuery) {
+                const query = window.searchQuery.toLowerCase();
+                filteredPosts = filteredPosts.filter(post => {
+                    const titleMatch = post.title.toLowerCase().includes(query);
+                    const contentMatch = post.content.toLowerCase().includes(query);
+                    const hashtagMatch = post.hashtags && post.hashtags.some(tag => 
+                        tag.toLowerCase().includes(query)
+                    );
+                    return titleMatch || contentMatch || hashtagMatch;
+                });
+
+                // Show search results info
+                const searchInfo = document.getElementById('searchResultsInfo');
+                searchInfo.style.display = 'block';
+                searchInfo.innerHTML = `Знайдено <strong>${filteredPosts.length}</strong> ${getPluralForm(filteredPosts.length, 'публікація', 'публікації', 'публікацій')} за запитом "<strong>${escapeHtml(window.searchQuery)}</strong>"`;
+            } else {
+                document.getElementById('searchResultsInfo').style.display = 'none';
+            }
+
             if (filteredPosts.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state">
-                        <h3>Поки що немає публікацій</h3>
-                        <p>Скоро тут з'являться нові думки та поезія</p>
+                        <h3>${window.searchQuery ? 'Нічого не знайдено' : 'Поки що немає публікацій'}</h3>
+                        <p>${window.searchQuery ? 'Спробуйте інший пошуковий запит' : 'Скоро тут з\'являться нові думки та поезія'}</p>
                     </div>
                 `;
                 document.getElementById('tocContainer').style.display = 'none';
@@ -1813,6 +2011,75 @@
             div.textContent = text;
             return div.innerHTML;
         }
+
+        function getPluralForm(number, one, few, many) {
+            const mod10 = number % 10;
+            const mod100 = number % 100;
+            
+            if (mod10 === 1 && mod100 !== 11) return one;
+            if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+            return many;
+        }
+
+        // Public Search Functions
+        window.searchPosts = function() {
+            const searchInput = document.getElementById('searchInput');
+            window.searchQuery = searchInput.value.trim();
+            
+            if (window.searchQuery) {
+                document.getElementById('clearSearchBtn').style.display = 'block';
+            }
+            
+            renderPublicPosts();
+        };
+
+        window.clearSearch = function() {
+            window.searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            document.getElementById('searchResultsInfo').style.display = 'none';
+            renderPublicPosts();
+        };
+
+        // Enter key support for search
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        searchPosts();
+                    }
+                });
+            }
+        });
+
+        // Admin Search Functions
+        window.searchAdminPosts = function() {
+            const searchInput = document.getElementById('adminSearchInput');
+            window.adminSearchQuery = searchInput.value.trim();
+            
+            if (window.adminSearchQuery) {
+                document.getElementById('clearAdminSearchBtn').style.display = 'block';
+            }
+            
+            renderAdminPosts();
+        };
+
+        window.clearAdminSearch = function() {
+            window.adminSearchQuery = '';
+            document.getElementById('adminSearchInput').value = '';
+            document.getElementById('clearAdminSearchBtn').style.display = 'none';
+            renderAdminPosts();
+        };
+
+        // Filter admin posts by hashtag
+        window.filterAdminByHashtag = function(tag) {
+            const searchInput = document.getElementById('adminSearchInput');
+            searchInput.value = '#' + tag;
+            window.adminSearchQuery = tag;
+            document.getElementById('clearAdminSearchBtn').style.display = 'block';
+            renderAdminPosts();
+        };
     </script>
 </body>
 </html>
