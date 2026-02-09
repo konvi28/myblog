@@ -1604,6 +1604,10 @@
 
     <!-- Firebase SDK -->
     <script type="module">
+
+		let headerLocked = false;
+
+		
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, set, get, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
@@ -2253,34 +2257,33 @@
         };
 
         // Auto-collapse header on scroll
-        let lastScrollTop = 0;
-        window.addEventListener('scroll', () => {
-            const header = document.getElementById('siteHeader');
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Collapse header when scrolling down
-            if (scrollTop > lastScrollTop && scrollTop > 50) {
-                header.classList.remove('expanded');
-                document.getElementById('headerToggle').textContent = '▼';
-            }
-            
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        });
+let lastScrollTop = 0;
+window.addEventListener('scroll', () => {
+    if (headerLocked) return; // ⛔ не чіпаємо хедер
+
+    const header = document.getElementById('siteHeader');
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > lastScrollTop && scrollTop > 50) {
+        header.classList.remove('expanded');
+        document.getElementById('headerToggle').textContent = '▼';
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+});
     </script>
 	<script>
 function toggleHeader() {
     const header = document.getElementById('siteHeader');
-    const toggleBtn = document.getElementById('headerToggle');
+    const toggle = document.getElementById('headerToggle');
 
     header.classList.toggle('expanded');
+    headerLocked = header.classList.contains('expanded');
 
-    // міняємо стрілку
-    if (header.classList.contains('expanded')) {
-        toggleBtn.textContent = '▲';
-    } else {
-        toggleBtn.textContent = '▼';
-    }
+    toggle.textContent = header.classList.contains('expanded') ? '▲' : '▼';
 }
+
+		
 document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('siteHeader');
     const toggleBtn = document.getElementById('headerToggle');
