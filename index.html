@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поетичні роздуми 1.7</title>
+    <title>Поетичні роздуми 2.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -48,34 +48,89 @@
         }
 
         header {
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             text-align: center;
-            padding: 4rem 2rem 1.5rem;
-            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-main) 100%);
+            padding: 1rem 2rem;
+            background: var(--bg-card);
             border-bottom: 2px solid var(--border);
-            animation: fadeInDown 1s ease-out;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        header.expanded {
+            padding: 3rem 2rem 2rem;
         }
 
         header h1 {
             font-family: 'Philosopher', sans-serif;
-            font-size: 3.5rem;
+            font-size: 2rem;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0;
             letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+        }
+
+        header.expanded h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
         }
 
         header p {
-            font-size: 1.3rem;
+            font-size: 1rem;
             color: var(--text-light);
             font-style: italic;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        header.expanded p {
+            opacity: 1;
+            max-height: 50px;
+            margin-top: 0.5rem;
         }
 
         .header-ornament {
             width: 60px;
             height: 3px;
             background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 0.5rem auto 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        header.expanded .header-ornament {
+            opacity: 1;
             margin: 1.5rem auto;
+        }
+
+        .header-toggle {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .header-toggle:hover {
+            background: var(--accent-light);
+            transform: translateX(-50%) scale(1.1);
         }
 
         .container {
@@ -84,6 +139,7 @@
             padding: 1.5rem 2rem 3rem;
             position: relative;
             z-index: 1;
+            margin-top: 1rem;
         }
 
         /* Table of Contents */
@@ -238,8 +294,31 @@
 
         .hashtag-filters {
             display: flex;
-            flex-wrap: wrap;
             gap: 0.5rem;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding-bottom: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--border);
+        }
+
+        .hashtag-filters::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .hashtag-filters::-webkit-scrollbar-track {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .hashtag-filters::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .hashtag-filters::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
         }
 
         .hashtag-filter {
@@ -541,26 +620,6 @@
             font-family: Georgia, 'Times New Roman', serif;
             font-weight: 400;
             transition: font-size 0.3s ease;
-        }
-
-        .post-content.font-small {
-            font-size: 1rem;
-            line-height: 1.65;
-        }
-
-        .post-content.font-medium {
-            font-size: 1.15rem;
-            line-height: 1.7;
-        }
-
-        .post-content.font-large {
-            font-size: 1.35rem;
-            line-height: 1.75;
-        }
-
-        .post-content.font-extra-small {
-            font-size: 0.85rem;
-            line-height: 1.6;
         }
 
         .post-content.poetry {
@@ -1279,10 +1338,11 @@
 <body>
     <!-- PUBLIC SITE -->
     <div id="publicSite">
-        <header>
+        <header id="siteHeader">
             <h1>Роздуми та поезія</h1>
             <div class="header-ornament"></div>
             <p>Олег Красовський</p>
+            <button class="header-toggle" onclick="toggleHeader()" id="headerToggle">▼</button>
         </header>
 
         <div class="container">
@@ -1760,7 +1820,7 @@
                                             ${post.hashtags && post.hashtags.length > 0 ? `
                                                 <div class="post-hashtags-admin">
                                                     ${post.hashtags.map(tag => `
-                                                        <span class="hashtag-admin" onclick="filterAdminByHashtag('${escapeHtml(tag)}')">#${escapeHtml(tag)}</span>
+                                                        <span class="hashtag-admin" onclick="filterAdminByHashtag(\`${tag}\`)">#${escapeHtml(tag)}</span>
                                                     `).join('')}
                                                 </div>
                                             ` : ''}
@@ -1907,7 +1967,7 @@
                         ${post.hashtags && post.hashtags.length > 0 ? `
                             <div class="post-hashtags">
                                 ${post.hashtags.map(tag => `
-                                    <span class="hashtag" onclick="filterByHashtag('${escapeHtml(tag)}')">#${escapeHtml(tag)}</span>
+                                    <span class="hashtag" onclick="filterByHashtag(\`${tag}\`)">#${escapeHtml(tag)}</span>
                                 `).join('')}
                             </div>
                         ` : ''}
@@ -1986,7 +2046,7 @@
             hashtagFilters.innerHTML = `
                 <button class="clear-hashtag-filter" onclick="clearHashtagFilter()" style="${window.currentHashtagFilter ? '' : 'display:none;'}" id="clearHashtagBtn">✕ Очистити фільтр</button>
                 ${Array.from(allHashtags).sort().map(tag => `
-                    <span class="hashtag-filter ${window.currentHashtagFilter === tag ? 'active' : ''}" onclick="filterByHashtag('${escapeHtml(tag)}')">#${escapeHtml(tag)}</span>
+                    <span class="hashtag-filter ${window.currentHashtagFilter === tag ? 'active' : ''}" onclick="filterByHashtag(\`${tag}\`)">#${escapeHtml(tag)}</span>
                 `).join('')}
             `;
         }
@@ -2066,6 +2126,16 @@
                     }
                 });
             }
+
+            // Admin search Enter support
+            const adminSearchInput = document.getElementById('adminSearchInput');
+            if (adminSearchInput) {
+                adminSearchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        searchAdminPosts();
+                    }
+                });
+            }
         });
 
         // Admin Search Functions
@@ -2095,6 +2165,30 @@
             document.getElementById('clearAdminSearchBtn').style.display = 'block';
             renderAdminPosts();
         };
+
+        // Header Toggle
+        window.toggleHeader = function() {
+            const header = document.getElementById('siteHeader');
+            const toggle = document.getElementById('headerToggle');
+            
+            header.classList.toggle('expanded');
+            toggle.textContent = header.classList.contains('expanded') ? '▲' : '▼';
+        };
+
+        // Auto-collapse header on scroll
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('siteHeader');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Collapse header when scrolling down
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                header.classList.remove('expanded');
+                document.getElementById('headerToggle').textContent = '▼';
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
     </script>
 </body>
 </html>
