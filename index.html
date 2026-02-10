@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.4</title>
+    <title>Поетичні роздуми 2.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -2563,88 +2563,101 @@ async function exportPostAsImage(post) {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
     
-    // Акцентна лінія
+    // Акцентна лінія зліва
     ctx.fillStyle = colors.accent;
     ctx.fillRect(cardX, cardY, 4, cardHeight);
     
-    let currentY = cardY + 50;
+    let currentY = cardY + 60;
     
-    // Тип публікації
+    // Тип публікації (бейдж)
     const typeText = post.type === 'poetry' ? 'ПОЕЗІЯ' : 'ДУМКА';
     ctx.fillStyle = '#b8956a';
-    roundRect(ctx, cardX + 40, currentY, 120, 32, 15);
+    roundRect(ctx, cardX + 40, currentY, 120, 36, 18);
     ctx.fill();
     
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 16px sans-serif';
+    ctx.font = 'bold 18px "Philosopher", Arial, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(typeText, cardX + 100, currentY + 22);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(typeText, cardX + 100, currentY + 18);
     
-    currentY += 60;
+    currentY += 70;
     
-    // Заголовок
+    // Заголовок (з правильним шрифтом Philosopher)
     ctx.fillStyle = colors.primary;
-    ctx.font = 'bold 48px sans-serif';
+    ctx.font = 'bold 52px "Philosopher", Arial, sans-serif';
     ctx.textAlign = 'left';
-    currentY = drawWrappedText(ctx, post.title, cardX + 40, currentY, cardWidth - 80, 60);
-    
-    currentY += 30;
-    
-    // Дата
-    ctx.fillStyle = colors.textLight;
-    ctx.font = 'italic 22px serif';
-    ctx.fillText(formatDateForImage(post.date), cardX + 40, currentY);
-    
-    currentY += 50;
-    
-    // Текст
-    ctx.fillStyle = colors.textMain;
-    const fontSize = 28;
-    const lineHeight = fontSize * 1.7;
-    
-    if (post.type === 'poetry') {
-        ctx.font = `italic ${fontSize}px serif`;
-        ctx.textAlign = 'center';
-        currentY = drawWrappedText(ctx, post.content, width / 2, currentY, cardWidth - 160, lineHeight);
-    } else {
-        ctx.font = `${fontSize}px serif`;
-        ctx.textAlign = 'left';
-        currentY = drawWrappedText(ctx, post.content, cardX + 40, currentY, cardWidth - 80, lineHeight);
-    }
+    ctx.textBaseline = 'top';
+    currentY = drawWrappedText(ctx, post.title, cardX + 40, currentY, cardWidth - 80, 65);
     
     currentY += 40;
     
+    // Дата
+    ctx.fillStyle = colors.textLight;
+    ctx.font = 'italic 24px Georgia, serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText(formatDateForImage(post.date), cardX + 40, currentY);
+    
+    currentY += 60;
+    
+    // Текст публікації
+    ctx.fillStyle = colors.textMain;
+    const fontSize = 26;
+    const lineHeight = fontSize * 1.75;
+    
+    if (post.type === 'poetry') {
+        // Поезія - по центру, курсив
+        ctx.font = `italic ${fontSize}px Georgia, serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        currentY = drawWrappedText(ctx, post.content, width / 2, currentY, cardWidth - 160, lineHeight);
+    } else {
+        // Думки - звичайний текст
+        ctx.font = `${fontSize}px Georgia, serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        currentY = drawWrappedText(ctx, post.content, cardX + 40, currentY, cardWidth - 80, lineHeight);
+    }
+    
+    currentY += 50;
+    
     // Хештеги
     if (post.hashtags && post.hashtags.length > 0) {
-        ctx.font = 'bold 20px sans-serif';
+        ctx.font = 'bold 22px "Philosopher", Arial, sans-serif';
         ctx.fillStyle = colors.accent;
         ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
         
         let hashtagX = cardX + 40;
         const hashtagY = currentY;
         
         for (const tag of post.hashtags.slice(0, 5)) {
             const tagText = '#' + tag;
-            const tagWidth = ctx.measureText(tagText).width;
+            const metrics = ctx.measureText(tagText);
+            const tagWidth = metrics.width;
             
-            if (hashtagX + tagWidth + 20 > cardX + cardWidth - 40) break;
+            // Перевірка чи вміщується
+            if (hashtagX + tagWidth + 30 > cardX + cardWidth - 40) break;
             
+            // Фон хештегу
             ctx.fillStyle = colors.bgMain;
-            roundRect(ctx, hashtagX, hashtagY - 20, tagWidth + 24, 32, 15);
+            roundRect(ctx, hashtagX, hashtagY - 18, tagWidth + 28, 36, 18);
             ctx.fill();
             
+            // Текст хештегу
             ctx.fillStyle = colors.accent;
-            ctx.fillText(tagText, hashtagX + 12, hashtagY);
+            ctx.fillText(tagText, hashtagX + 14, hashtagY);
             
-            hashtagX += tagWidth + 32;
+            hashtagX += tagWidth + 40;
         }
     }
     
-    // Футер
-    const footerY = cardY + cardHeight - 50;
+    // Футер з назвою
+    const footerY = cardY + cardHeight - 45;
     ctx.fillStyle = colors.textLight;
-    ctx.font = 'italic 20px serif';
+    ctx.font = 'italic 22px Georgia, serif';
     ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText('Роздуми та поезія', width / 2, footerY);
     
     return new Promise((resolve) => {
