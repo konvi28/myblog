@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.3</title>
+    <title>Поетичні роздуми 2.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -290,6 +290,46 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+        }
+
+        .post-actions {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .btn-download-image {
+            padding: 8px 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-download-image:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
+        }
+
+        .btn-download-image:active {
+            transform: translateY(0);
+        }
+
+        .btn-download-image:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .hashtag {
@@ -2185,7 +2225,7 @@
 
             grid.innerHTML = sortedPosts
                 .map((post, index) => `
-                    <div class="post-card" id="post-${post.id}">
+                    <div class="post-card" id="post-${post.id}" data-post-id="${post.id}">
                         <span class="post-type">${post.type === 'poetry' ? 'Поезія' : 'Думка'}</span>
                         <h2>${escapeHtml(post.title)}</h2>
                         <div class="post-date">${formatDate(post.date)}</div>
@@ -2197,6 +2237,11 @@
                                 `).join('')}
                             </div>
                         ` : ''}
+                        <div class="post-actions">
+                            <button class="btn-download-image" onclick="downloadPostAsImage('${post.id}')">
+                                📥 Зберегти як фото
+                            </button>
+                        </div>
                     </div>
                 `).join('');
             
@@ -2441,3 +2486,236 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+<script>
+// ===== EXPORT POST AS IMAGE =====
+window.downloadPostAsImage = async function(postId) {
+    const post = window.posts.find(p => p.id === postId);
+    if (!post) return;
+
+    const button = event.target;
+    button.disabled = true;
+    button.textContent = '⏳ Створюю зображення...';
+
+    try {
+        const blob = await exportPostAsImage(post);
+        const filename = `${post.title.substring(0, 30).replace(/[^a-zа-яїієґ0-9]/gi, '_')}.png`;
+        downloadImage(blob, filename);
+        button.textContent = '✅ Збережено!';
+        setTimeout(() => {
+            button.textContent = '📥 Зберегти як фото';
+            button.disabled = false;
+        }, 2000);
+    } catch (error) {
+        console.error('Error creating image:', error);
+        button.textContent = '❌ Помилка';
+        setTimeout(() => {
+            button.textContent = '📥 Зберегти як фото';
+            button.disabled = false;
+        }, 2000);
+    }
+};
+
+async function exportPostAsImage(post) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    const width = 1080;
+    const height = 1080;
+    canvas.width = width;
+    canvas.height = height;
+    
+    const colors = {
+        bgMain: '#faf8f3',
+        bgCard: '#ffffff',
+        primary: '#2c3e50',
+        accent: '#8b6f47',
+        textMain: '#1a1a1a',
+        textLight: '#666666'
+    };
+    
+    // Фон
+    ctx.fillStyle = colors.bgMain;
+    ctx.fillRect(0, 0, width, height);
+    
+    // Градієнт
+    const gradient = ctx.createRadialGradient(width * 0.2, height * 0.8, 0, width * 0.2, height * 0.8, width * 0.5);
+    gradient.addColorStop(0, 'rgba(139, 111, 71, 0.03)');
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    
+    // Картка
+    const padding = 60;
+    const cardX = padding;
+    const cardY = padding;
+    const cardWidth = width - padding * 2;
+    const cardHeight = height - padding * 2;
+    
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.08)';
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetY = 4;
+    
+    ctx.fillStyle = colors.bgCard;
+    roundRect(ctx, cardX, cardY, cardWidth, cardHeight, 12);
+    ctx.fill();
+    
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+    
+    // Акцентна лінія
+    ctx.fillStyle = colors.accent;
+    ctx.fillRect(cardX, cardY, 4, cardHeight);
+    
+    let currentY = cardY + 50;
+    
+    // Тип публікації
+    const typeText = post.type === 'poetry' ? 'ПОЕЗІЯ' : 'ДУМКА';
+    ctx.fillStyle = '#b8956a';
+    roundRect(ctx, cardX + 40, currentY, 120, 32, 15);
+    ctx.fill();
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(typeText, cardX + 100, currentY + 22);
+    
+    currentY += 60;
+    
+    // Заголовок
+    ctx.fillStyle = colors.primary;
+    ctx.font = 'bold 48px sans-serif';
+    ctx.textAlign = 'left';
+    currentY = drawWrappedText(ctx, post.title, cardX + 40, currentY, cardWidth - 80, 60);
+    
+    currentY += 30;
+    
+    // Дата
+    ctx.fillStyle = colors.textLight;
+    ctx.font = 'italic 22px serif';
+    ctx.fillText(formatDateForImage(post.date), cardX + 40, currentY);
+    
+    currentY += 50;
+    
+    // Текст
+    ctx.fillStyle = colors.textMain;
+    const fontSize = 28;
+    const lineHeight = fontSize * 1.7;
+    
+    if (post.type === 'poetry') {
+        ctx.font = `italic ${fontSize}px serif`;
+        ctx.textAlign = 'center';
+        currentY = drawWrappedText(ctx, post.content, width / 2, currentY, cardWidth - 160, lineHeight);
+    } else {
+        ctx.font = `${fontSize}px serif`;
+        ctx.textAlign = 'left';
+        currentY = drawWrappedText(ctx, post.content, cardX + 40, currentY, cardWidth - 80, lineHeight);
+    }
+    
+    currentY += 40;
+    
+    // Хештеги
+    if (post.hashtags && post.hashtags.length > 0) {
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillStyle = colors.accent;
+        ctx.textAlign = 'left';
+        
+        let hashtagX = cardX + 40;
+        const hashtagY = currentY;
+        
+        for (const tag of post.hashtags.slice(0, 5)) {
+            const tagText = '#' + tag;
+            const tagWidth = ctx.measureText(tagText).width;
+            
+            if (hashtagX + tagWidth + 20 > cardX + cardWidth - 40) break;
+            
+            ctx.fillStyle = colors.bgMain;
+            roundRect(ctx, hashtagX, hashtagY - 20, tagWidth + 24, 32, 15);
+            ctx.fill();
+            
+            ctx.fillStyle = colors.accent;
+            ctx.fillText(tagText, hashtagX + 12, hashtagY);
+            
+            hashtagX += tagWidth + 32;
+        }
+    }
+    
+    // Футер
+    const footerY = cardY + cardHeight - 50;
+    ctx.fillStyle = colors.textLight;
+    ctx.font = 'italic 20px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Роздуми та поезія', width / 2, footerY);
+    
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), 'image/png', 1.0);
+    });
+}
+
+function roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(/\s+/);
+    let line = '';
+    let currentY = y;
+    let linesDrawn = 0;
+    const maxLines = 15;
+    
+    for (let i = 0; i < words.length; i++) {
+        if (linesDrawn >= maxLines) {
+            ctx.fillText(line + '...', x, currentY);
+            return currentY + lineHeight;
+        }
+        
+        const testLine = line + words[i] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && i > 0) {
+            ctx.fillText(line, x, currentY);
+            line = words[i] + ' ';
+            currentY += lineHeight;
+            linesDrawn++;
+        } else {
+            line = testLine;
+        }
+    }
+    
+    if (line.trim() && linesDrawn < maxLines) {
+        ctx.fillText(line, x, currentY);
+        currentY += lineHeight;
+    }
+    
+    return currentY;
+}
+
+function formatDateForImage(dateString) {
+    const date = new Date(dateString);
+    const months = ['січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',
+        'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+function downloadImage(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
