@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 3.5</title>
+    <title>Поетичні роздуми 3.6</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1498,7 +1498,6 @@
 
             /* Додаємо підказку про можливість розгортання */
             .header-main::after {
-                content: 'Натисніть ▼ для пошуку та налаштувань';
                 display: block;
                 text-align: center;
                 font-size: 0.7rem;
@@ -2648,13 +2647,9 @@
                     toc.style.display = 'block';
                 }
                 
-                // Отримати позицію елемента
-                const tocPosition = toc.getBoundingClientRect().top + window.pageYOffset;
-                const headerHeight = document.getElementById('siteHeader').offsetHeight;
-                
-                // Прокрутити з урахуванням висоти header
+                // Прокрутити на початок сторінки (де знаходиться зміст)
                 window.scrollTo({
-                    top: tocPosition - headerHeight - 20,
+                    top: 0,
                     behavior: 'smooth'
                 });
                 
