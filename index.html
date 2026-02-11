@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.7</title>
+    <title>Поетичні роздуми 2.8</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -587,6 +587,31 @@
         }
 
         .clear-search-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-to-toc {
+            padding: 9px 18px;
+            background: var(--bg-card);
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-to-toc:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
+        }
+
+        .btn-to-toc:active {
             transform: translateY(0);
         }
 
@@ -1644,12 +1669,6 @@
                 padding: 0.5rem 0.5rem 0.35rem;
             }
 
-            /* Коротша підказка для маленьких екранів */
-            .header-main::after {
-                content: '▼ Пошук і налаштування';
-                font-size: 0.65rem;
-            }
-
             .header-toggle {
                 width: 32px;
                 height: 32px;
@@ -1767,6 +1786,11 @@
                             <button class="search-btn" onclick="searchPosts()">🔍 Знайти</button>
                             <button class="clear-search-btn" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✕ Скинути</button>
                         </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <button class="btn-to-toc" onclick="scrollToTOC()">📑 До змісту</button>
                     </div>
 
                     <!-- Font Size Control -->
@@ -2613,6 +2637,21 @@
             
             header.classList.toggle('expanded');
             toggle.textContent = header.classList.contains('expanded') ? '▲' : '▼';
+        };
+
+        // Scroll to TOC
+        window.scrollToTOC = function() {
+            const toc = document.getElementById('tocContainer');
+            if (toc && toc.style.display !== 'none') {
+                toc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Закрити header після переходу
+                setTimeout(() => {
+                    const header = document.getElementById('siteHeader');
+                    const toggle = document.getElementById('headerToggle');
+                    header.classList.remove('expanded');
+                    toggle.textContent = '▼';
+                }, 500);
+            }
         };
 
         // Auto-collapse header on scroll
