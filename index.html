@@ -2431,9 +2431,7 @@
                             </div>
                         ` : ''}
                         <div class="post-actions">
-                            <button class="btn-download-image" onclick="downloadPostAsImage('${post.id}')">
-                                📥 Зберегти як фото
-                            </button>
+<button id="downloadImageBtn">📷 Зберегти як фото</button>
                         </div>
                     </div>
                 `).join('');
@@ -2689,7 +2687,13 @@ document.addEventListener('DOMContentLoaded', () => {
     header.classList.remove('expanded');
     toggleBtn.textContent = '▼';
 });
+document
+  .getElementById('downloadImageBtn')
+  .addEventListener('click', downloadPostAsImage);
 
+function downloadPostAsImage() {
+  alert('кнопка працює'); // для тесту
+}
 		
 </script>
 </body>
