@@ -1498,7 +1498,7 @@
 
             /* Додаємо підказку про можливість розгортання */
             .header-main::after {
-
+                content: 'Натисніть ▼ для пошуку та налаштувань';
                 display: block;
                 text-align: center;
                 font-size: 0.7rem;
@@ -1599,19 +1599,27 @@
 
             /* Компактний пошук */
             .search-box {
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: wrap;
                 gap: 0.5rem;
             }
 
             .search-input {
-                width: 100%;
+                flex: 1;
+                min-width: 200px;
                 font-size: 0.9rem;
             }
 
-            .search-btn,
+            .search-btn {
+                flex: 0 0 auto;
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
             .clear-search-btn {
-                width: 100%;
-                text-align: center;
+                flex: 0 0 auto;
+                padding: 8px 12px;
+                font-size: 0.85rem;
             }
 
             /* Зменшуємо відступи хештег-контейнера */
@@ -1623,12 +1631,6 @@
             /* Зменшуємо відступи футера */
             footer {
                 padding: 2rem 0.75rem 4rem;
-            }
-
-            .search-btn,
-            .clear-search-btn {
-                padding: 8px 12px;
-                font-size: 0.85rem;
             }
 
             .admin-layout {
@@ -1788,11 +1790,6 @@
                         </div>
                     </div>
 
-                    <!-- Quick Actions -->
-                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                        <button class="btn-to-toc" onclick="scrollToTOC()">📑 До змісту</button>
-                    </div>
-
                     <!-- Font Size Control -->
                     <div class="font-size-control">
                         <span class="font-size-label">Розмір:</span>
@@ -1804,6 +1801,11 @@
                     <div class="hashtag-filter-container" id="hashtagFilterContainer" style="display: none;">
                         <div class="hashtag-filter-label">Фільтрувати за хештегами:</div>
                         <div class="hashtag-filters" id="hashtagFilters"></div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <button class="btn-to-toc" onclick="scrollToTOC()">📑 До змісту</button>
                     </div>
                 </div>
             </div>
