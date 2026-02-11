@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 3.2</title>
+    <title>Поетичні роздуми 3.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -2690,11 +2690,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleBtn.textContent = '▼';
 });
 
-		
-</script>
-</body>
-</html>
-<script>
+
 // ===== EXPORT POST AS IMAGE =====
 window.downloadPostAsImage = async function(postId) {
     const post = window.posts.find(p => p.id === postId);
@@ -2791,7 +2787,7 @@ async function exportPostAsImage(post) {
     
     currentY += 70;
     
-    // Заголовок (з правильним шрифтом Philosopher)
+    // Заголовок
     ctx.fillStyle = colors.primary;
     ctx.font = 'bold 52px "Philosopher", Arial, sans-serif';
     ctx.textAlign = 'left';
@@ -2814,13 +2810,11 @@ async function exportPostAsImage(post) {
     const lineHeight = fontSize * 1.75;
     
     if (post.type === 'poetry') {
-        // Поезія - по центру, курсив
         ctx.font = `italic ${fontSize}px Georgia, serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         currentY = drawWrappedText(ctx, post.content, width / 2, currentY, cardWidth - 160, lineHeight);
     } else {
-        // Думки - звичайний текст
         ctx.font = `${fontSize}px Georgia, serif`;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
@@ -2844,15 +2838,12 @@ async function exportPostAsImage(post) {
             const metrics = ctx.measureText(tagText);
             const tagWidth = metrics.width;
             
-            // Перевірка чи вміщується
             if (hashtagX + tagWidth + 30 > cardX + cardWidth - 40) break;
             
-            // Фон хештегу
             ctx.fillStyle = colors.bgMain;
             roundRect(ctx, hashtagX, hashtagY - 18, tagWidth + 28, 36, 18);
             ctx.fill();
             
-            // Текст хештегу
             ctx.fillStyle = colors.accent;
             ctx.fillText(tagText, hashtagX + 14, hashtagY);
             
@@ -2860,7 +2851,7 @@ async function exportPostAsImage(post) {
         }
     }
     
-    // Футер з назвою
+    // Футер
     const footerY = cardY + cardHeight - 45;
     ctx.fillStyle = colors.textLight;
     ctx.font = 'italic 22px Georgia, serif';
@@ -2888,7 +2879,6 @@ function roundRect(ctx, x, y, width, height, radius) {
 }
 
 function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
-    // Розбиваємо на рядки (зберігаємо переноси)
     const lines = text.split('\n');
     let currentY = y;
     let linesDrawn = 0;
@@ -2900,14 +2890,12 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
             return currentY + lineHeight;
         }
         
-        // Якщо рядок порожній - малюємо пустий рядок (як в вірші)
         if (line.trim() === '') {
             currentY += lineHeight;
             linesDrawn++;
             continue;
         }
         
-        // Розбиваємо довгі рядки по словах
         const words = line.split(/\s+/);
         let currentLine = '';
         
@@ -2916,7 +2904,6 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
             const metrics = ctx.measureText(testLine);
             
             if (metrics.width > maxWidth && i > 0) {
-                // Рядок не вміщується - малюємо те що є
                 ctx.fillText(currentLine.trim(), x, currentY);
                 currentLine = words[i] + ' ';
                 currentY += lineHeight;
@@ -2931,16 +2918,12 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
             }
         }
         
-        // Малюємо залишок рядка
         if (currentLine.trim()) {
             ctx.fillText(currentLine.trim(), x, currentY);
             currentY += lineHeight;
             linesDrawn++;
         }
     }
-    
-    return currentY;
-}
     
     return currentY;
 }
@@ -2962,4 +2945,7 @@ function downloadImage(blob, filename) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
+			
 </script>
+</body>
+</html>
