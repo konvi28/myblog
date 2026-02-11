@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.5</title>
+    <title>Поетичні роздуми 2.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -517,9 +517,9 @@
 
         .search-input {
             flex: 1;
-            padding: 8px 12px;
+            padding: 9px 14px;
             border: 2px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             font-family: 'Cormorant Garamond', serif;
             font-size: 0.95rem;
             background: var(--bg-card);
@@ -529,15 +529,75 @@
         .search-input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(139, 111, 71, 0.1);
+            box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+            background: #fff;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-light);
+            opacity: 0.7;
         }
 
         .search-btn {
-            padding: 8px 16px;
-            background: var(--accent);
+            padding: 9px 18px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(139, 111, 71, 0.2);
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 111, 71, 0.35);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(139, 111, 71, 0.2);
+        }
+
+        .clear-search-btn {
+            padding: 9px 18px;
+            background: #f5f3ef;
+            color: var(--text-main);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .clear-search-btn:hover {
+            background: #e8e4dc;
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .clear-search-btn:active {
+            transform: translateY(0);
+        }
+
+        .search-results-info {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 6px;
             margin-bottom: 1rem;
-            color: #ffffff;
+            color: var(--text-light);
             font-size: 0.9rem;
         }
 
@@ -1388,12 +1448,64 @@
         }
 
         @media (max-width: 768px) {
+            /* Компактна шапка для мобільних */
+            header {
+                position: sticky;
+                top: 0;
+            }
+
             header h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
 
             header.expanded h1 {
-                font-size: 1.8rem;
+                font-size: 1.3rem;
+            }
+
+            .header-main {
+                padding: 0.75rem 0.75rem 0.5rem;
+                position: relative;
+            }
+
+            header.expanded .header-main {
+                padding: 0.75rem 0.75rem 0.5rem;
+            }
+
+            /* Додаємо підказку про можливість розгортання */
+            .header-main::after {
+                content: 'Натисніть ▼ для пошуку та налаштувань';
+                display: block;
+                text-align: center;
+                font-size: 0.7rem;
+                color: var(--text-light);
+                opacity: 0.6;
+                margin-top: 0.5rem;
+                font-family: 'Philosopher', sans-serif;
+            }
+
+            header.expanded .header-main::after {
+                content: '';
+            }
+
+            .header-ornament {
+                display: none;
+            }
+
+            header p {
+                font-size: 0.85rem;
+            }
+
+            /* Контроли завжди приховані, показуються тільки при expanded */
+            .header-controls {
+                max-height: 0 !important;
+                opacity: 0 !important;
+                padding: 0 !important;
+            }
+
+            header.expanded .header-controls {
+                max-height: 600px !important;
+                opacity: 1 !important;
+                padding: 0.75rem 0 !important;
             }
 
             .header-controls-inner {
@@ -1401,12 +1513,25 @@
                 padding: 0 0.75rem;
             }
 
-            .header-main {
-                padding: 1rem 0.75rem;
+            .header-toggle {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+                bottom: -18px;
+                animation: pulse 2s infinite;
             }
 
-            header.expanded .header-main {
-                padding: 2rem 0.75rem 1rem;
+            @keyframes pulse {
+                0%, 100% {
+                    box-shadow: 0 0 0 0 rgba(139, 111, 71, 0.7);
+                }
+                50% {
+                    box-shadow: 0 0 0 8px rgba(139, 111, 71, 0);
+                }
+            }
+
+            header.expanded .header-toggle {
+                animation: none;
             }
 
             /* Зменшуємо відступи контейнера */
@@ -1447,6 +1572,23 @@
                 font-size: 0.85rem;
             }
 
+            /* Компактний пошук */
+            .search-box {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .search-input {
+                width: 100%;
+                font-size: 0.9rem;
+            }
+
+            .search-btn,
+            .clear-search-btn {
+                width: 100%;
+                text-align: center;
+            }
+
             /* Зменшуємо відступи хештег-контейнера */
             .hashtag-filter-container {
                 padding: 0.75rem;
@@ -1484,13 +1626,40 @@
 
         /* Для дуже маленьких екранів */
         @media (max-width: 480px) {
-            /* Мінімальні відступи */
-            .container {
-                padding: 0.75rem 0.5rem 1.5rem;
+            /* Максимально компактна шапка */
+            header h1 {
+                font-size: 1.1rem;
+            }
+
+            header p {
+                font-size: 0.75rem;
+                margin-top: 0.25rem;
             }
 
             .header-main {
-                padding: 0.75rem 0.5rem;
+                padding: 0.5rem 0.5rem 0.35rem;
+            }
+
+            header.expanded .header-main {
+                padding: 0.5rem 0.5rem 0.35rem;
+            }
+
+            /* Коротша підказка для маленьких екранів */
+            .header-main::after {
+                content: '▼ Пошук і налаштування';
+                font-size: 0.65rem;
+            }
+
+            .header-toggle {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+                bottom: -16px;
+            }
+
+            /* Мінімальні відступи */
+            .container {
+                padding: 0.75rem 0.5rem 1.5rem;
             }
 
             .header-controls-inner {
@@ -1595,8 +1764,8 @@
                     <div class="search-container">
                         <div class="search-box">
                             <input type="text" class="search-input" id="searchInput" placeholder="🔍 Пошук публікацій...">
-                            <button class="search-btn" onclick="searchPosts()">Знайти</button>
-                            <button class="clear-search-btn" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✕</button>
+                            <button class="search-btn" onclick="searchPosts()">🔍 Знайти</button>
+                            <button class="clear-search-btn" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✕ Скинути</button>
                         </div>
                     </div>
 
