@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 0.8</title>
+    <title>Поетичні роздуми 0.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3054,7 +3054,9 @@ function roundRect(ctx, x, y, width, height, radius) {
 }
 
 function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
-    const lines = text.split('\n');
+    // Нормалізуємо переноси рядків (різні формати)
+    const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const lines = normalizedText.split('\n');
     let currentY = y;
     let linesDrawn = 0;
     const maxLines = 15;
@@ -3065,12 +3067,14 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
             return currentY + lineHeight;
         }
         
+        // Порожній рядок - зберігаємо (для строф)
         if (line.trim() === '') {
-            currentY += lineHeight;
+            currentY += lineHeight * 0.6; // Менший відступ для порожніх рядків
             linesDrawn++;
             continue;
         }
         
+        // Розбиваємо довгі рядки по словах
         const words = line.split(/\s+/);
         let currentLine = '';
         
@@ -3093,6 +3097,7 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
             }
         }
         
+        // Малюємо залишок рядка
         if (currentLine.trim()) {
             ctx.fillText(currentLine.trim(), x, currentY);
             currentY += lineHeight;
