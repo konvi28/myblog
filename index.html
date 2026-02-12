@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 0.1</title>
+    <title>Поетичні роздуми 0.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -58,7 +58,6 @@
             border-bottom: 2px solid var(--border);
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px var(--shadow);
-			padding: 3px;
         }
 
         .header-main {
@@ -358,8 +357,8 @@
         }
 
         .hashtag-filter-container {
-         
-            padding: 0.3rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -1784,7 +1783,7 @@
                     <!-- Search -->
                     <div class="search-container">
                         <div class="search-box">
-                            <input type="text" class="search-input" id="searchInput" placeholder="Пошук публікацій...">
+                            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Пошук публікацій...">
                             <button class="search-btn" onclick="searchPosts()">🔍 Знайти</button>
                             <button class="clear-search-btn" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✕ Скинути</button>
                         </div>
@@ -2743,6 +2742,10 @@ async function exportPostAsImage(post) {
     canvas.width = width;
     canvas.height = height;
     
+    // Отримуємо поточний розмір шрифту з налаштувань
+    const savedFontSize = localStorage.getItem('fontSize') || '115';
+    const fontSizeMultiplier = parseInt(savedFontSize) / 115; // 115 - базовий розмір
+    
     const colors = {
         bgMain: '#faf8f3',
         bgCard: '#ffffff',
@@ -2802,12 +2805,13 @@ async function exportPostAsImage(post) {
     
     currentY += 70;
     
-    // Заголовок
+    // Заголовок (застосовуємо множник розміру шрифту)
     ctx.fillStyle = colors.primary;
-    ctx.font = 'bold 52px "Philosopher", Arial, sans-serif';
+    const titleFontSize = Math.round(52 * fontSizeMultiplier);
+    ctx.font = `bold ${titleFontSize}px "Philosopher", Arial, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    currentY = drawWrappedText(ctx, post.title, cardX + 40, currentY, cardWidth - 80, 65);
+    currentY = drawWrappedText(ctx, post.title, cardX + 40, currentY, cardWidth - 80, Math.round(65 * fontSizeMultiplier));
     
     currentY += 40;
     
@@ -2819,9 +2823,9 @@ async function exportPostAsImage(post) {
     
     currentY += 60;
     
-    // Текст публікації
+    // Текст публікації (застосовуємо множник розміру шрифту)
     ctx.fillStyle = colors.textMain;
-    const fontSize = 26;
+    const fontSize = Math.round(26 * fontSizeMultiplier);
     const lineHeight = fontSize * 1.75;
     
     if (post.type === 'poetry') {
