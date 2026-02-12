@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.2</title>
+    <title>Поетичні роздуми 1.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -307,7 +307,8 @@
         }
 
         .btn-download-image,
-        .btn-favorite {
+        .btn-favorite,
+        .btn-to-toc {
             padding: 8px 16px;
             background: var(--accent);
             color: white;
@@ -315,16 +316,23 @@
             border-radius: 6px;
             cursor: pointer;
             font-family: 'Philosopher', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            white-space: nowrap;
         }
 
         .btn-favorite {
             background: #6c757d;
+        }
+
+        .btn-to-toc {
+            background: var(--bg-card);
+            color: var(--accent);
+            border: 2px solid var(--accent);
         }
 
         .btn-favorite.active {
@@ -332,13 +340,19 @@
         }
 
         .btn-download-image:hover,
-        .btn-favorite:hover {
+        .btn-favorite:hover,
+        .btn-to-toc:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
         }
 
         .btn-download-image:hover {
             background: var(--accent-light);
+        }
+
+        .btn-to-toc:hover {
+            background: var(--accent);
+            color: white;
         }
 
         .btn-favorite:hover {
@@ -350,7 +364,8 @@
         }
 
         .btn-download-image:active,
-        .btn-favorite:active {
+        .btn-favorite:active,
+        .btn-to-toc:active {
             transform: translateY(0);
         }
 
@@ -614,31 +629,6 @@
         }
 
         .clear-search-btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-to-toc {
-            padding: 9px 18px;
-            background: var(--bg-card);
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Philosopher', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .btn-to-toc:hover {
-            background: var(--accent);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
-        }
-
-        .btn-to-toc:active {
             transform: translateY(0);
         }
 
