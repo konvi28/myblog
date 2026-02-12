@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 0.4</title>
+    <title>Поетичні роздуми 0.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -306,7 +306,8 @@
             gap: 0.5rem;
         }
 
-        .btn-download-image {
+        .btn-download-image,
+        .btn-favorite {
             padding: 8px 16px;
             background: var(--accent);
             color: white;
@@ -322,13 +323,34 @@
             gap: 0.5rem;
         }
 
-        .btn-download-image:hover {
-            background: var(--accent-light);
+        .btn-favorite {
+            background: #6c757d;
+        }
+
+        .btn-favorite.active {
+            background: #dc3545;
+        }
+
+        .btn-download-image:hover,
+        .btn-favorite:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
         }
 
-        .btn-download-image:active {
+        .btn-download-image:hover {
+            background: var(--accent-light);
+        }
+
+        .btn-favorite:hover {
+            background: #5a6268;
+        }
+
+        .btn-favorite.active:hover {
+            background: #c82333;
+        }
+
+        .btn-download-image:active,
+        .btn-favorite:active {
             transform: translateY(0);
         }
 
@@ -1828,6 +1850,7 @@
                         <div class="filter-tab active" data-filter="all">Усі</div>
                         <div class="filter-tab" data-filter="poetry">Поезія</div>
                         <div class="filter-tab" data-filter="thought">Думки</div>
+                        <div class="filter-tab" data-filter="favorites">⭐ Обране</div>
                     </div>
 			
             <!-- Table of Contents -->
@@ -2133,6 +2156,39 @@
             });
         }
 
+        // Favorites functionality
+        function getFavorites() {
+            const favorites = localStorage.getItem('favorites');
+            return favorites ? JSON.parse(favorites) : [];
+        }
+
+        function saveFavorites(favorites) {
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+        }
+
+        function isFavorite(postId) {
+            const favorites = getFavorites();
+            return favorites.includes(postId);
+        }
+
+        window.toggleFavorite = function(postId) {
+            let favorites = getFavorites();
+            const index = favorites.indexOf(postId);
+            
+            if (index > -1) {
+                // Видалити з обраного
+                favorites.splice(index, 1);
+            } else {
+                // Додати в обране
+                favorites.push(postId);
+            }
+            
+            saveFavorites(favorites);
+            
+            // Оновити відображення
+            renderPublicPosts();
+        }
+
         // Login
         window.showLogin = function() {
             document.getElementById('loginModal').classList.add('active');
@@ -2386,9 +2442,17 @@
 
         function renderPublicPosts() {
             const grid = document.getElementById('postsGrid');
-            let filteredPosts = window.currentFilter === 'all' 
-                ? window.posts 
-                : window.posts.filter(post => post.type === window.currentFilter);
+            let filteredPosts;
+            
+            if (window.currentFilter === 'favorites') {
+                // Показати тільки обрані публікації
+                const favorites = getFavorites();
+                filteredPosts = window.posts.filter(post => favorites.includes(post.id));
+            } else if (window.currentFilter === 'all') {
+                filteredPosts = window.posts;
+            } else {
+                filteredPosts = window.posts.filter(post => post.type === window.currentFilter);
+            }
 
             // Filter by hashtag if selected
             if (window.currentHashtagFilter) {
@@ -2446,6 +2510,9 @@
                             </div>
                         ` : ''}
                         <div class="post-actions">
+                            <button class="btn-favorite ${isFavorite(post.id) ? 'active' : ''}" onclick="toggleFavorite('${post.id}')">
+                                ${isFavorite(post.id) ? '❤️ В обраному' : '🤍 В обране'}
+                            </button>
                             <button class="btn-download-image" onclick="downloadPostAsImage('${post.id}')">
                                 📥 Зберегти як фото
                             </button>
