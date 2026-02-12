@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 0.5</title>
+    <title>Поетичні роздуми 0.6</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1661,6 +1661,39 @@
             .admin-sidebar {
                 width: 100%;
             }
+            
+            /* Адаптивна шапка адмін-панелі */
+            .admin-header {
+                padding: 0.75rem 1rem;
+                height: auto;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .admin-header h1 {
+                font-size: 1rem;
+                width: 100%;
+            }
+            
+            .admin-header-actions {
+                flex-direction: row;
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .admin-user {
+                font-size: 0.8rem;
+                flex: 1 1 100%;
+            }
+            
+            .btn-view-site,
+            .btn-logout {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
 
             .posts-table {
                 font-size: 0.85rem;
@@ -1784,6 +1817,25 @@
             /* Компактний footer */
             footer {
                 padding: 1.5rem 0.5rem 3.5rem;
+            }
+            
+            /* Ультра-компактна адмін шапка */
+            .admin-header {
+                padding: 0.5rem 0.75rem;
+            }
+            
+            .admin-header h1 {
+                font-size: 0.9rem;
+            }
+            
+            .admin-user {
+                font-size: 0.75rem;
+            }
+            
+            .btn-view-site,
+            .btn-logout {
+                padding: 5px 10px;
+                font-size: 0.75rem;
             }
 
             footer p {
