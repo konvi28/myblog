@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 0.3</title>
+    <title>Поетичні роздуми 0.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1792,7 +1792,7 @@
                     <!-- Font Size Control -->
                     <div class="font-size-control">
                         <span class="font-size-label">Розмір:</span>
-                        <input type="range" class="font-size-slider" id="fontSizeSlider" min="85" max="200" value="115" step="10">
+                        <input type="range" class="font-size-slider" id="fontSizeSlider" min="0" max="100" value="50" step="5">
                         <span class="font-size-value" id="fontSizeValue">100%</span>
                     </div>
 
@@ -2089,8 +2089,19 @@
             
             if (!slider) return;
             
-            // Load saved size
-            const savedSize = localStorage.getItem('fontSize') || '115';
+            // Load saved size (старі значення конвертуємо в нові)
+            let savedSize = localStorage.getItem('fontSize');
+            if (savedSize) {
+                const oldValue = parseInt(savedSize);
+                // Конвертуємо старі значення (85-200) в нові (0-100)
+                if (oldValue > 100) {
+                    // Старий формат, конвертуємо
+                    savedSize = Math.round(((oldValue - 85) / (200 - 85)) * 100);
+                }
+            } else {
+                savedSize = '50'; // Базовий розмір
+            }
+            
             slider.value = savedSize;
             updateFontSize(savedSize);
             
@@ -2102,20 +2113,23 @@
 
         function updateFontSize(size) {
             const sizeNum = parseInt(size);
-            const percentage = Math.round((sizeNum / 115) * 100);
+            
+            // Конвертуємо 0-100 в множник від 0.5 до 2.5
+            // 0 = 0.5x, 50 = 1.0x (базовий), 100 = 2.5x
+            const multiplier = 0.5 + (sizeNum / 100) * 2.0;
             
             // Update display
             const valueDisplay = document.getElementById('fontSizeValue');
             if (valueDisplay) {
-                valueDisplay.textContent = percentage + '%';
+                valueDisplay.textContent = sizeNum + '%';
             }
             
             // Save preference
             localStorage.setItem('fontSize', size);
             
-            // Apply to all post contents
+            // Apply to all post contents (базовий розмір 1.15rem)
             document.querySelectorAll('.post-content').forEach(content => {
-                content.style.fontSize = (sizeNum / 100) + 'rem';
+                content.style.fontSize = (1.15 * multiplier) + 'rem';
             });
         }
 
@@ -2743,8 +2757,21 @@ async function exportPostAsImage(post) {
     canvas.height = height;
     
     // Отримуємо поточний розмір шрифту з налаштувань
-    const savedFontSize = localStorage.getItem('fontSize') || '115';
-    const fontSizeMultiplier = parseInt(savedFontSize) / 115; // 115 - базовий розмір
+    let savedFontSize = localStorage.getItem('fontSize');
+    let fontSizeMultiplier = 1.0; // Базовий множник
+    
+    if (savedFontSize) {
+        const sizeNum = parseInt(savedFontSize);
+        // Перевіряємо чи це старий формат (85-200)
+        if (sizeNum > 100) {
+            // Старий формат, конвертуємо в новий
+            const newValue = Math.round(((sizeNum - 85) / (200 - 85)) * 100);
+            fontSizeMultiplier = 0.5 + (newValue / 100) * 2.0;
+        } else {
+            // Новий формат (0-100)
+            fontSizeMultiplier = 0.5 + (sizeNum / 100) * 2.0;
+        }
+    }
     
     const colors = {
         bgMain: '#faf8f3',
