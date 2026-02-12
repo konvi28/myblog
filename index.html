@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 0.7</title>
+    <title>Поетичні роздуми 0.8</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -144,7 +144,7 @@
         
         /* Зменшений відступ між хештегами та кнопкою "До змісту" */
         .hashtag-filter-container + div {
-            margin-top: -0.5rem;
+            margin-top: -0.75rem !important;
         }
 			
         .header-toggle {
@@ -1548,6 +1548,11 @@
                 gap: 0.75rem;
                 padding: 0 0.75rem;
             }
+            
+            /* Зменшений відступ між хештегами та кнопкою в мобільній версії */
+            .hashtag-filter-container + div {
+                margin-top: -0.5rem !important;
+            }
 
             .header-toggle {
                 width: 36px;
@@ -1739,6 +1744,11 @@
 
             .header-controls-inner {
                 padding: 0 0.5rem;
+            }
+            
+            /* Ще менший відступ між хештегами та кнопкою на малих екранах */
+            .hashtag-filter-container + div {
+                margin-top: -0.4rem !important;
             }
 
             /* Дуже компактні картки */
