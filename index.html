@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.4</title>
+    <title>Поетичні роздуми 1.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -823,6 +823,51 @@
             padding: 4rem 2rem;
             color: var(--text-light);
             font-size: 1.2rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 8px 14px;
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            padding: 0 0.5rem;
         }
 
         footer {
@@ -1912,6 +1957,9 @@
             <div class="posts-grid" id="postsGrid">
                 <div class="loading">Завантаження публікацій...</div>
             </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display: none;"></div>
         </div>
 
         <footer>
@@ -2096,6 +2144,8 @@
         window.currentHashtagFilter = null;
         window.searchQuery = '';
         window.adminSearchQuery = '';
+        window.currentPage = 1;
+        window.postsPerPage = 50;
         window.isAdminLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
         const ADMIN_PASSWORD = 'mypoetry2026';
 
@@ -2482,6 +2532,7 @@
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
                     window.currentFilter = tab.dataset.filter;
+                    window.currentPage = 1;
                     renderPublicPosts();
                 });
             });
@@ -2537,12 +2588,19 @@
                 `;
                 document.getElementById('tocContainer').style.display = 'none';
                 document.getElementById('hashtagFilterContainer').style.display = 'none';
+                document.getElementById('pagination').style.display = 'none';
                 return;
             }
 
             const sortedPosts = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            grid.innerHTML = sortedPosts
+            // Pagination
+            const totalPages = Math.ceil(sortedPosts.length / window.postsPerPage);
+            const startIndex = (window.currentPage - 1) * window.postsPerPage;
+            const endIndex = startIndex + window.postsPerPage;
+            const postsToShow = sortedPosts.slice(startIndex, endIndex);
+
+            grid.innerHTML = postsToShow
                 .map((post, index) => `
                     <div class="post-card" id="post-${post.id}" data-post-id="${post.id}">
                         <span class="post-type">${post.type === 'poetry' ? 'Поезія' : 'Думка'}</span>
@@ -2579,7 +2637,58 @@
 
             // Build Hashtag Filter
             buildHashtagFilter();
+
+            // Render pagination
+            renderPagination(totalPages, sortedPosts.length);
         }
+
+        function renderPagination(totalPages, totalPosts) {
+            const paginationEl = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                paginationEl.style.display = 'none';
+                return;
+            }
+
+            paginationEl.style.display = 'flex';
+            
+            let html = '';
+            
+            // Previous button
+            html += `<button class="pagination-btn" onclick="goToPage(${window.currentPage - 1})" ${window.currentPage === 1 ? 'disabled' : ''}>← Попередня</button>`;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (
+                    i === 1 || 
+                    i === totalPages || 
+                    (i >= window.currentPage - 1 && i <= window.currentPage + 1)
+                ) {
+                    html += `<button class="pagination-btn ${i === window.currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                } else if (i === window.currentPage - 2 || i === window.currentPage + 2) {
+                    html += `<span class="pagination-info">...</span>`;
+                }
+            }
+            
+            // Next button
+            html += `<button class="pagination-btn" onclick="goToPage(${window.currentPage + 1})" ${window.currentPage === totalPages ? 'disabled' : ''}>Наступна →</button>`;
+            
+            // Info
+            const startIndex = (window.currentPage - 1) * window.postsPerPage + 1;
+            const endIndex = Math.min(window.currentPage * window.postsPerPage, totalPosts);
+            html += `<span class="pagination-info">${startIndex}-${endIndex} з ${totalPosts}</span>`;
+            
+            paginationEl.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            window.currentPage = page;
+            renderPublicPosts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.goToPage = goToPage;
+
 
         function buildTOC(posts) {
             const tocList = document.getElementById('tocList');
@@ -2653,11 +2762,13 @@
             } else {
                 window.currentHashtagFilter = tag;
             }
+            window.currentPage = 1;
             renderPublicPosts();
         };
 
         window.clearHashtagFilter = function() {
             window.currentHashtagFilter = null;
+            window.currentPage = 1;
             renderPublicPosts();
         };
 
@@ -2701,6 +2812,7 @@
                 document.getElementById('clearSearchBtn').style.display = 'block';
             }
             
+            window.currentPage = 1;
             renderPublicPosts();
         };
 
@@ -2709,6 +2821,7 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('clearSearchBtn').style.display = 'none';
             document.getElementById('searchResultsInfo').style.display = 'none';
+            window.currentPage = 1;
             renderPublicPosts();
         };
 
