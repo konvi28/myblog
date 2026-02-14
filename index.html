@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.6</title>
+    <title>Поетичні роздуми 1.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -578,6 +578,33 @@
         .search-input::placeholder {
             color: var(--text-light);
             opacity: 0.7;
+        }
+
+        .search-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            justify-content: center;
+        }
+
+        .search-option {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            font-family: 'Philosopher', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+
+        .search-option:hover {
+            color: var(--accent);
+        }
+
+        .search-option input[type="radio"] {
+            cursor: pointer;
+            accent-color: var(--accent);
         }
 
         .search-btn {
@@ -1906,6 +1933,20 @@
                             <button class="search-btn" onclick="searchPosts()">🔍 Знайти</button>
                             <button class="clear-search-btn" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">✕ Скинути</button>
                         </div>
+                        <div class="search-options">
+                            <label class="search-option">
+                                <input type="radio" name="searchType" value="all" checked>
+                                <span>Всюди</span>
+                            </label>
+                            <label class="search-option">
+                                <input type="radio" name="searchType" value="title">
+                                <span>По заголовках</span>
+                            </label>
+                            <label class="search-option">
+                                <input type="radio" name="searchType" value="content">
+                                <span>По тексту</span>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Font Size Control -->
@@ -2562,19 +2603,29 @@
             // Filter by search query
             if (window.searchQuery) {
                 const query = window.searchQuery.toLowerCase();
+                const searchType = document.querySelector('input[name="searchType"]:checked')?.value || 'all';
+                
                 filteredPosts = filteredPosts.filter(post => {
                     const titleMatch = post.title.toLowerCase().includes(query);
                     const contentMatch = post.content.toLowerCase().includes(query);
                     const hashtagMatch = post.hashtags && post.hashtags.some(tag => 
                         tag.toLowerCase().includes(query)
                     );
-                    return titleMatch || contentMatch || hashtagMatch;
+                    
+                    if (searchType === 'title') {
+                        return titleMatch;
+                    } else if (searchType === 'content') {
+                        return contentMatch;
+                    } else {
+                        return titleMatch || contentMatch || hashtagMatch;
+                    }
                 });
 
                 // Show search results info
                 const searchInfo = document.getElementById('searchResultsInfo');
                 searchInfo.style.display = 'block';
-                searchInfo.innerHTML = `Знайдено <strong>${filteredPosts.length}</strong> ${getPluralForm(filteredPosts.length, 'публікація', 'публікації', 'публікацій')} за запитом "<strong>${escapeHtml(window.searchQuery)}</strong>"`;
+                const searchTypeText = searchType === 'title' ? 'по заголовках' : searchType === 'content' ? 'по тексту' : '';
+                searchInfo.innerHTML = `Знайдено <strong>${filteredPosts.length}</strong> ${getPluralForm(filteredPosts.length, 'публікація', 'публікації', 'публікацій')} ${searchTypeText} за запитом "<strong>${escapeHtml(window.searchQuery)}</strong>"`;
             } else {
                 document.getElementById('searchResultsInfo').style.display = 'none';
             }
