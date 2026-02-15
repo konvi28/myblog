@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.91</title>
+    <title>Поетичні роздуми 1.92</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3138,8 +3138,8 @@ async function exportPostAsImage(post) {
         ctx.textBaseline = 'top';
         currentY = drawWrappedText(ctx, post.content, width / 2, currentY, cardWidth - 160, lineHeight);
         
-        // Футер "Поезія KonVi" - внизу з невеликим відступом
-        const footerY = cardY + cardHeight - 30; // Було 45, тепер 30 (ближче до краю)
+        // Футер "Поезія KonVi" - внизу з мінімальним відступом
+        const footerY = cardY + cardHeight - 8; // Мінімальний відступ від краю
         ctx.fillStyle = colors.textLight;
         ctx.font = 'italic 22px Georgia, serif';
         ctx.textAlign = 'center';
