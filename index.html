@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.97</title>
+    <title>Поетичні роздуми 1.98</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3158,23 +3158,9 @@ async function exportPostAsImage(post) {
         ctx.fillText('Поезія KonVi', width / 2, footerY);
         
     } else {
-        // ============ ШАБЛОН ДЛЯ ДУМОК (повний) ============
+        // ============ ШАБЛОН ДЛЯ ДУМОК (компактний) ============
         
-        // Тип публікації (бейдж)
-        const typeText = 'ДУМКА';
-        ctx.fillStyle = '#b8956a';
-        roundRect(ctx, cardX + 40, currentY, 120, 36, 18);
-        ctx.fill();
-        
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 18px "Philosopher", Arial, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(typeText, cardX + 100, currentY + 18);
-        
-        currentY += 70;
-        
-        // Заголовок (повний розмір)
+        // Заголовок
         ctx.fillStyle = colors.primary;
         const titleFontSize = Math.round(52 * fontSizeMultiplier);
         ctx.font = `bold ${titleFontSize}px "Philosopher", Arial, sans-serif`;
@@ -3182,15 +3168,7 @@ async function exportPostAsImage(post) {
         ctx.textBaseline = 'top';
         currentY = drawWrappedText(ctx, post.title, cardX + 40, currentY, cardWidth - 80, Math.round(65 * fontSizeMultiplier));
         
-        currentY += 40;
-        
-        // Дата
-        ctx.fillStyle = colors.textLight;
-        ctx.font = 'italic 24px Georgia, serif';
-        ctx.textBaseline = 'top';
-        ctx.fillText(formatDateForImage(post.date), cardX + 40, currentY);
-        
-        currentY += 60;
+        currentY += 50; // Відступ після заголовка
         
         // Текст думки (вліво)
         ctx.fillStyle = colors.textMain;
