@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.99</title>
+    <title>Поетичні роздуми 1.98</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,6 +19,71 @@
             --text-light: #666666;
             --border: #e8e4dc;
             --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        /* Травянисто-зелена тема */
+        [data-theme="green"] {
+            --primary: #2d5016;
+            --accent: #6b8e23;
+            --accent-light: #9acd32;
+            --bg-main: #f5f9f0;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-light: #5a6b4a;
+            --border: #d4e7c5;
+            --shadow: rgba(107, 142, 35, 0.1);
+        }
+
+        /* Морська синя тема */
+        [data-theme="ocean"] {
+            --primary: #1b4965;
+            --accent: #5fa8d3;
+            --accent-light: #90c2e7;
+            --bg-main: #f0f7fb;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-light: #567a92;
+            --border: #d4e8f5;
+            --shadow: rgba(95, 168, 211, 0.1);
+        }
+
+        /* Фіолетово-лавандова тема */
+        [data-theme="lavender"] {
+            --primary: #4a2c62;
+            --accent: #8b5fb0;
+            --accent-light: #b794cc;
+            --bg-main: #f8f5fb;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-light: #6d5578;
+            --border: #e6dced;
+            --shadow: rgba(139, 95, 176, 0.1);
+        }
+
+        /* Теракотово-рожева тема */
+        [data-theme="terracotta"] {
+            --primary: #8b4513;
+            --accent: #d2691e;
+            --accent-light: #e9967a;
+            --bg-main: #fdf7f4;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-light: #8b6854;
+            --border: #f0dfce;
+            --shadow: rgba(210, 105, 30, 0.1);
+        }
+
+        /* Темна тема */
+        [data-theme="dark"] {
+            --primary: #e8e6e3;
+            --accent: #c9a961;
+            --accent-light: #e0c78a;
+            --bg-main: #1a1a1a;
+            --bg-card: #2d2d2d;
+            --text-main: #e8e6e3;
+            --text-light: #a8a8a8;
+            --border: #404040;
+            --shadow: rgba(0, 0, 0, 0.3);
         }
 
         * {
@@ -1422,6 +1487,87 @@
             padding: 2rem;
         }
 
+        /* Theme Settings */
+        .theme-settings-container {
+            background: white;
+            border: 1px solid #c3c4c7;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+            padding: 2rem;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .theme-card {
+            border: 2px solid #dcdcde;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .theme-card:hover {
+            border-color: #2271b1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-card.active {
+            border-color: #2271b1;
+            background: #f0f6fc;
+        }
+
+        .theme-preview {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            height: 60px;
+        }
+
+        .theme-color {
+            flex: 1;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-name {
+            font-weight: 600;
+            color: #1d2327;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .theme-check {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 28px;
+            height: 28px;
+            background: #2271b1;
+            color: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-card.active .theme-check {
+            display: flex;
+        }
+
+        .theme-actions {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #dcdcde;
+        }
+
         .editor-form .form-group {
             margin-bottom: 1.5rem;
         }
@@ -2069,6 +2215,10 @@
                         <span class="admin-menu-icon">➕</span>
                         Додати нову
                     </a></li>
+                    <li><a href="#" onclick="showThemeSettings(event)">
+                        <span class="admin-menu-icon">🎨</span>
+                        Налаштування теми
+                    </a></li>
                 </ul>
             </div>
 
@@ -2152,6 +2302,83 @@
                                     <button type="button" class="btn-cancel" onclick="cancelEditor()">Скасувати</button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+
+                    <!-- THEME SETTINGS VIEW -->
+                    <div id="themeSettingsView" style="display: none;">
+                        <div class="admin-page-header">
+                            <h2>🎨 Налаштування теми сайту</h2>
+                        </div>
+
+                        <div class="theme-settings-container">
+                            <p style="color: #646970; margin-bottom: 2rem;">Оберіть колірну схему для вашого сайту. Зміни застосовуються миттєво.</p>
+                            
+                            <div class="theme-grid">
+                                <div class="theme-card" data-theme="default" onclick="applyTheme('default')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #faf8f3;"></div>
+                                        <div class="theme-color" style="background: #8b6f47;"></div>
+                                        <div class="theme-color" style="background: #2c3e50;"></div>
+                                    </div>
+                                    <div class="theme-name">Класична бежева</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="green" onclick="applyTheme('green')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #f5f9f0;"></div>
+                                        <div class="theme-color" style="background: #6b8e23;"></div>
+                                        <div class="theme-color" style="background: #2d5016;"></div>
+                                    </div>
+                                    <div class="theme-name">Травянисто-зелена</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="ocean" onclick="applyTheme('ocean')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #f0f7fb;"></div>
+                                        <div class="theme-color" style="background: #5fa8d3;"></div>
+                                        <div class="theme-color" style="background: #1b4965;"></div>
+                                    </div>
+                                    <div class="theme-name">Морська синя</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="lavender" onclick="applyTheme('lavender')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #f8f5fb;"></div>
+                                        <div class="theme-color" style="background: #8b5fb0;"></div>
+                                        <div class="theme-color" style="background: #4a2c62;"></div>
+                                    </div>
+                                    <div class="theme-name">Фіолетово-лавандова</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="terracotta" onclick="applyTheme('terracotta')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #fdf7f4;"></div>
+                                        <div class="theme-color" style="background: #d2691e;"></div>
+                                        <div class="theme-color" style="background: #8b4513;"></div>
+                                    </div>
+                                    <div class="theme-name">Теракотово-рожева</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="dark" onclick="applyTheme('dark')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #1a1a1a;"></div>
+                                        <div class="theme-color" style="background: #c9a961;"></div>
+                                        <div class="theme-color" style="background: #e8e6e3;"></div>
+                                    </div>
+                                    <div class="theme-name">Темна</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+                            </div>
+
+                            <div class="theme-actions" style="margin-top: 2rem;">
+                                <button class="btn-cancel" onclick="showAllPosts(event)">← Назад до публікацій</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2405,6 +2632,7 @@
             if (e) e.preventDefault();
             document.getElementById('allPostsView').style.display = 'block';
             document.getElementById('editorView').style.display = 'none';
+            document.getElementById('themeSettingsView').style.display = 'none';
             
             document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
             if (e) e.target.closest('a').classList.add('active');
@@ -2417,6 +2645,7 @@
             if (e) e.preventDefault();
             document.getElementById('allPostsView').style.display = 'none';
             document.getElementById('editorView').style.display = 'block';
+            document.getElementById('themeSettingsView').style.display = 'none';
             
             document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
             if (e && e.target.closest('a')) e.target.closest('a').classList.add('active');
@@ -2426,6 +2655,57 @@
                 document.getElementById('editorTitle').textContent = 'Створити публікацію';
             }
         }
+
+        window.showThemeSettings = function(e) {
+            if (e) e.preventDefault();
+            document.getElementById('allPostsView').style.display = 'none';
+            document.getElementById('editorView').style.display = 'none';
+            document.getElementById('themeSettingsView').style.display = 'block';
+            
+            document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
+            if (e) e.target.closest('a').classList.add('active');
+            
+            // Відобразити активну тему
+            updateThemeCards();
+        }
+
+        function updateThemeCards() {
+            const currentTheme = localStorage.getItem('siteTheme') || 'default';
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.remove('active');
+                if (card.dataset.theme === currentTheme) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        window.applyTheme = function(themeName) {
+            // Зберігаємо вибір теми
+            localStorage.setItem('siteTheme', themeName);
+            
+            // Застосовуємо тему
+            if (themeName === 'default') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', themeName);
+            }
+            
+            // Оновлюємо відображення
+            updateThemeCards();
+            
+            console.log(`Тема змінена на: ${themeName}`);
+        }
+
+        // Завантажуємо збережену тему при старті
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('siteTheme');
+            if (savedTheme && savedTheme !== 'default') {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
+
+        // Викликаємо при завантаженні
+        loadSavedTheme();
 
         function resetEditor() {
             document.getElementById('editorForm').reset();
