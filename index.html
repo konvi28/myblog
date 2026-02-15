@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.8</title>
+    <title>Поетичні роздуми 1.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3101,25 +3101,32 @@ async function exportPostAsImage(post) {
     
     // РІЗНІ ШАБЛОНИ ДЛЯ ПОЕЗІЇ ТА ДУМОК
     if (post.type === 'poetry') {
-        // ============ ШАБЛОН ДЛЯ ПОЕЗІЇ (компактний) ============
+        // ============ ШАБЛОН ДЛЯ ПОЕЗІЇ (компактний, відцентрований) ============
         
-        // Заголовок (зменшений шрифт)
+        // Спочатку рахуємо висоту контенту для центрування
+        ctx.font = `bold ${Math.round(38 * fontSizeMultiplier)}px "Philosopher", Arial, sans-serif`;
+        const titleHeight = measureTextHeight(ctx, post.title, cardWidth - 80, Math.round(48 * fontSizeMultiplier));
+        
+        ctx.font = `italic ${Math.round(26 * fontSizeMultiplier)}px Georgia, serif`;
+        const contentHeight = measureTextHeight(ctx, post.content, cardWidth - 160, Math.round(26 * fontSizeMultiplier) * 1.75);
+        
+        const footerHeight = 50; // Висота футера
+        const spaceBetween = 40; // Відстань між заголовком і віршем
+        
+        const totalContentHeight = titleHeight + spaceBetween + contentHeight + footerHeight;
+        
+        // Центруємо вертикально
+        currentY = cardY + (cardHeight - totalContentHeight) / 2;
+        
+        // Заголовок (відцентрований)
         ctx.fillStyle = colors.primary;
-        const titleFontSize = Math.round(38 * fontSizeMultiplier); // Було 52, стало 38
+        const titleFontSize = Math.round(38 * fontSizeMultiplier);
         ctx.font = `bold ${titleFontSize}px "Philosopher", Arial, sans-serif`;
-        ctx.textAlign = 'left';
+        ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
-        currentY = drawWrappedText(ctx, post.title, cardX + 40, currentY, cardWidth - 80, Math.round(48 * fontSizeMultiplier));
+        currentY = drawWrappedText(ctx, post.title, width / 2, currentY, cardWidth - 80, Math.round(48 * fontSizeMultiplier));
         
-        currentY += 30; // Менший відступ
-        
-        // Дата
-        ctx.fillStyle = colors.textLight;
-        ctx.font = 'italic 22px Georgia, serif';
-        ctx.textBaseline = 'top';
-        ctx.fillText(formatDateForImage(post.date), cardX + 40, currentY);
-        
-        currentY += 50; // Менший відступ
+        currentY += spaceBetween; // Невелика відстань між заголовком і віршем
         
         // Текст вірша (по центру, курсивом)
         ctx.fillStyle = colors.textMain;
@@ -3131,7 +3138,13 @@ async function exportPostAsImage(post) {
         ctx.textBaseline = 'top';
         currentY = drawWrappedText(ctx, post.content, width / 2, currentY, cardWidth - 160, lineHeight);
         
-        // БЕЗ хештегів та футера для віршів
+        // Футер "Поезія KonVi"
+        const footerY = cardY + cardHeight - 45;
+        ctx.fillStyle = colors.textLight;
+        ctx.font = 'italic 22px Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Поезія KonVi', width / 2, footerY);
         
     } else {
         // ============ ШАБЛОН ДЛЯ ДУМОК (повний) ============
@@ -3234,6 +3247,49 @@ function roundRect(ctx, x, y, width, height, radius) {
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
+}
+
+function measureTextHeight(ctx, text, maxWidth, lineHeight) {
+    const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const lines = normalizedText.split('\n');
+    let totalHeight = 0;
+    let linesCount = 0;
+    const maxLines = 15;
+    
+    for (const line of lines) {
+        if (linesCount >= maxLines) break;
+        
+        if (line.trim() === '') {
+            totalHeight += lineHeight * 0.6;
+            linesCount++;
+            continue;
+        }
+        
+        const words = line.split(/\s+/);
+        let currentLine = '';
+        
+        for (let i = 0; i < words.length; i++) {
+            const testLine = currentLine + words[i] + ' ';
+            const metrics = ctx.measureText(testLine);
+            
+            if (metrics.width > maxWidth && i > 0) {
+                totalHeight += lineHeight;
+                currentLine = words[i] + ' ';
+                linesCount++;
+                
+                if (linesCount >= maxLines) break;
+            } else {
+                currentLine = testLine;
+            }
+        }
+        
+        if (currentLine.trim()) {
+            totalHeight += lineHeight;
+            linesCount++;
+        }
+    }
+    
+    return totalHeight;
 }
 
 function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
