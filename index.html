@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.98</title>
+    <title>Поетичні роздуми 1.99</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -275,6 +275,14 @@
             background: var(--bg-main);
             color: var(--text-light);
             font-weight: 600;
+        }
+
+        .toc-number {
+            display: inline-block;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-right: 0.5rem;
+            min-width: 2rem;
         }
 
         .toc-type.poetry {
@@ -2767,10 +2775,11 @@
             tocList.classList.add('collapsed');
             document.getElementById('tocToggle').textContent = '▶';
             
-            tocList.innerHTML = posts.map(post => `
+            tocList.innerHTML = posts.map((post, index) => `
                 <li class="toc-item">
-                    <a href="#post-${post.id}" class="toc-link">
+                    <a href="#post-${post.id}" class="toc-link" data-post-index="${index}">
                         <span class="toc-link-text">
+                            <span class="toc-number">${index + 1}.</span>
                             <span class="toc-type ${post.type}">${post.type === 'poetry' ? 'П' : 'Д'}</span>
                             ${escapeHtml(post.title)}
                         </span>
@@ -2779,14 +2788,34 @@
                 </li>
             `).join('');
 
-            // Smooth scroll
+            // Smooth scroll з підтримкою пагінації
             document.querySelectorAll('.toc-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
+                    const postIndex = parseInt(link.getAttribute('data-post-index'));
                     const targetId = link.getAttribute('href');
-                    const target = document.querySelector(targetId);
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Розраховуємо на якій сторінці знаходиться пост
+                    const pageNumber = Math.floor(postIndex / window.postsPerPage) + 1;
+                    
+                    // Якщо пост на іншій сторінці - переходимо на неї
+                    if (pageNumber !== window.currentPage) {
+                        window.currentPage = pageNumber;
+                        renderPublicPosts();
+                        
+                        // Чекаємо поки пости відрендеряться, потім скролимо
+                        setTimeout(() => {
+                            const target = document.querySelector(targetId);
+                            if (target) {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 100);
+                    } else {
+                        // Якщо на поточній сторінці - просто скролимо
+                        const target = document.querySelector(targetId);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
                     }
                 });
             });
