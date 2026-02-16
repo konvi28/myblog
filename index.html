@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.12</title>
+    <title>Поетичні роздуми 2.13</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -131,6 +131,78 @@
             --text-lighter: #a08840;
             --border: #3d6565;
             --border-light: #2d5555;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Природна земна тема (Mother Earthed - світла) */
+        [data-theme="earth-light"] {
+            --primary: #4a5f3d;
+            --secondary: #6b7c5e;
+            --accent: #8b7355;
+            --accent-light: #a89078;
+            --accent-dark: #6d5638;
+            --bg-main: #f5f3ed;
+            --bg-card: #ffffff;
+            --bg-secondary: #ebe8df;
+            --text-main: #2d3a26;
+            --text-light: #6b7c5e;
+            --text-lighter: #8b9b7e;
+            --border: #d4cfbb;
+            --border-light: #e8e4d5;
+            --shadow: rgba(107, 124, 94, 0.1);
+        }
+
+        /* Природна земна тема (Mother Earthed - темна) */
+        [data-theme="earth-dark"] {
+            --primary: #e8e4d5;
+            --secondary: #d4cfbb;
+            --accent: #a89078;
+            --accent-light: #c9b89a;
+            --accent-dark: #8b7355;
+            --bg-main: #2d3a26;
+            --bg-card: #3d4a36;
+            --bg-secondary: #374435;
+            --text-main: #f5f3ed;
+            --text-light: #a89078;
+            --text-lighter: #8b7355;
+            --border: #4a5f3d;
+            --border-light: #3d4a36;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Лісова кава тема (Ravo Kafe - світла) */
+        [data-theme="forest-light"] {
+            --primary: #2d5045;
+            --secondary: #3d6555;
+            --accent: #8b7355;
+            --accent-light: #a89078;
+            --accent-dark: #6d5638;
+            --bg-main: #f0ede3;
+            --bg-card: #ffffff;
+            --bg-secondary: #e5e0d0;
+            --text-main: #1a2a22;
+            --text-light: #3d6555;
+            --text-lighter: #5d8575;
+            --border: #d4cfbb;
+            --border-light: #e5e0d0;
+            --shadow: rgba(45, 80, 69, 0.1);
+        }
+
+        /* Лісова кава тема (Ravo Kafe - темна) */
+        [data-theme="forest-dark"] {
+            --primary: #e5e0d0;
+            --secondary: #d4cfbb;
+            --accent: #a89078;
+            --accent-light: #c9b89a;
+            --accent-dark: #8b7355;
+            --bg-main: #1f3a32;
+            --bg-card: #2d5045;
+            --bg-secondary: #27453d;
+            --text-main: #f0ede3;
+            --text-light: #c9b89a;
+            --text-lighter: #a89078;
+            --border: #3d6555;
+            --border-light: #2d5045;
             --shadow: rgba(0, 0, 0, 0.4);
         }
 
@@ -2431,6 +2503,46 @@
                                         <div class="theme-color" style="background: #f5f0e8;"></div>
                                     </div>
                                     <div class="theme-name">Кавова елегантність</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="earth-light" onclick="applyTheme('earth-light')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #f5f3ed;"></div>
+                                        <div class="theme-color" style="background: #8b7355;"></div>
+                                        <div class="theme-color" style="background: #4a5f3d;"></div>
+                                    </div>
+                                    <div class="theme-name">Мати-Земля світла</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="earth-dark" onclick="applyTheme('earth-dark')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #2d3a26;"></div>
+                                        <div class="theme-color" style="background: #a89078;"></div>
+                                        <div class="theme-color" style="background: #e8e4d5;"></div>
+                                    </div>
+                                    <div class="theme-name">Мати-Земля темна</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="forest-light" onclick="applyTheme('forest-light')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #f0ede3;"></div>
+                                        <div class="theme-color" style="background: #8b7355;"></div>
+                                        <div class="theme-color" style="background: #2d5045;"></div>
+                                    </div>
+                                    <div class="theme-name">Лісова кава світла</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="forest-dark" onclick="applyTheme('forest-dark')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #1f3a32;"></div>
+                                        <div class="theme-color" style="background: #a89078;"></div>
+                                        <div class="theme-color" style="background: #e5e0d0;"></div>
+                                    </div>
+                                    <div class="theme-name">Лісова кава темна</div>
                                     <div class="theme-check">✓</div>
                                 </div>
                             </div>
