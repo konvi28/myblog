@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2</title>
+    <title>Поетичні роздуми 2.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3565,13 +3565,14 @@ async function exportPostAsImage(post) {
         ctx.font = `italic ${Math.round(26 * fontSizeMultiplier)}px Georgia, serif`;
         const contentHeight = measureTextHeight(ctx, post.content, cardWidth - 160, Math.round(26 * fontSizeMultiplier) * 1.75);
         
-        const footerHeight = 50; // Висота футера
         const spaceBetween = 40; // Відстань між заголовком і віршем
         
-        const totalContentHeight = titleHeight + spaceBetween + contentHeight + footerHeight;
+        // Не враховуємо футер в центруванні - він буде окремо внизу
+        const totalContentHeight = titleHeight + spaceBetween + contentHeight;
         
-        // Центруємо вертикально
-        currentY = cardY + (cardHeight - totalContentHeight) / 2;
+        // Центруємо вертикально (з урахуванням простору для футера внизу)
+        const footerSpace = 40; // Резервуємо місце для футера
+        currentY = cardY + (cardHeight - totalContentHeight - footerSpace) / 2;
         
         // Заголовок (відцентрований)
         ctx.fillStyle = colors.primary;
