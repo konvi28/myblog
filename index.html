@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.25</title>
+    <title>Поетичні роздуми 2.26</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -463,7 +463,7 @@
             position: sticky;
             top: 20px;
             background: var(--bg-card);
-            border: 2px solid var(--border);
+            border: 1px solid var(--border-light);
             border-radius: 12px;
             padding: 1rem 1.25rem;
             margin-bottom: 2rem;
@@ -610,7 +610,9 @@
         }
 
         .btn-favorite {
-            background: #6c757d;
+            background: var(--bg-card);
+            color: var(--accent);
+            border: 2px solid var(--accent);
         }
 
         .btn-to-toc {
@@ -621,6 +623,8 @@
 
         .btn-favorite.active {
             background: #dc3545;
+            color: white;
+            border: 2px solid #dc3545;
         }
 
         .btn-download-image:hover,
