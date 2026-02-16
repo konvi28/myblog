@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.1</title>
+    <title>Поетичні роздуми 2.11</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3594,12 +3594,12 @@ async function exportPostAsImage(post) {
         ctx.textBaseline = 'top';
         currentY = drawWrappedText(ctx, post.content, width / 2, currentY, cardWidth - 160, lineHeight);
         
-        // Футер "Поезія KonVi" - внизу з мінімальним відступом
-        const footerY = cardY + cardHeight - 8; // Мінімальний відступ від краю
+        // Футер "Поезія KonVi" - внизу з відступом 8px
+        const footerY = cardY + cardHeight - 8; // 8px від нижнього краю
         ctx.fillStyle = colors.textLight;
         ctx.font = 'italic 22px Georgia, serif';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.textBaseline = 'bottom'; // Низ тексту на цій координаті
         ctx.fillText('Поезія KonVi', width / 2, footerY);
         
     } else {
@@ -3627,12 +3627,12 @@ async function exportPostAsImage(post) {
         
         currentY += 50;
         
-        // Футер "Поезія KonVi" - внизу з мінімальним відступом (так само як у віршів)
-        const footerY = cardY + cardHeight - 8; // Мінімальний відступ від краю
+        // Футер "Поезія KonVi" - внизу з відступом 8px
+        const footerY = cardY + cardHeight - 8; // 8px від нижнього краю
         ctx.fillStyle = colors.textLight;
         ctx.font = 'italic 22px Georgia, serif';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.textBaseline = 'bottom'; // Низ тексту на цій координаті
         ctx.fillText('Поезія KonVi', width / 2, footerY);
     }
     
