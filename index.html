@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.11</title>
+    <title>Поетичні роздуми 2.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -258,6 +258,24 @@
             --border: #3d5a3d;
             --border-light: #d4d0bb;
             --shadow: rgba(42, 63, 42, 0.2);
+        }
+
+        /* М'який природний контраст (зебра з делікатною обводкою) */
+        [data-theme="nature-soft-contrast"] {
+            --primary: #2d4a2d;
+            --secondary: #3d5a3d;
+            --accent: #7a5a2d;
+            --accent-light: #9a7a4d;
+            --accent-dark: #5a3a1d;
+            --bg-main: #faf7ed;
+            --bg-card: #fefefc;
+            --bg-secondary: #2d4a2d;
+            --text-main: #1d1d1a;
+            --text-light: #4d4d48;
+            --text-lighter: #7d7d78;
+            --border: #e8e5d8;
+            --border-light: #f2f0e8;
+            --shadow: rgba(45, 74, 45, 0.15);
         }
 
         * {
@@ -2629,6 +2647,16 @@
                                     <div class="theme-name">Природний контраст</div>
                                     <div class="theme-check">✓</div>
                                 </div>
+
+                                <div class="theme-card" data-theme="nature-soft-contrast" onclick="applyTheme('nature-soft-contrast')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #faf7ed;"></div>
+                                        <div class="theme-color" style="background: #7a5a2d;"></div>
+                                        <div class="theme-color" style="background: #2d4a2d;"></div>
+                                    </div>
+                                    <div class="theme-name">М'який природний контраст</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
                             </div>
 
                             <div class="theme-actions" style="margin-top: 2rem;">
@@ -2999,7 +3027,16 @@
                         'ocean': 'Морська синя',
                         'lavender': 'Фіолетово-лавандова',
                         'terracotta': 'Теракотово-рожева',
-                        'dark': 'Темна'
+                        'dark': 'Темна',
+                        'coffee': 'Кавова елегантність',
+                        'earth-light': 'Мати-Земля світла',
+                        'earth-dark': 'Мати-Земля темна',
+                        'forest-light': 'Лісова кава світла',
+                        'forest-dark': 'Лісова кава темна',
+                        'green-brown-light': 'Зелено-коричнева світла',
+                        'green-brown-vibrant': 'Соковита зелено-коричнева',
+                        'nature-contrast': 'Природний контраст',
+                        'nature-soft-contrast': 'М\'який природний контраст'
                     };
                     alert(`✅ Тема "${themeNames[themeName]}" успішно застосована для всіх користувачів!`);
                 } catch (error) {
