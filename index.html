@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.14</title>
+    <title>Поетичні роздуми 2.11</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -240,6 +240,24 @@
             --border: #b8d4b8;
             --border-light: #dceadc;
             --shadow: rgba(29, 92, 46, 0.15);
+        }
+
+        /* Контрастна природна тема (зебра/шахи) */
+        [data-theme="nature-contrast"] {
+            --primary: #2a3f2a;
+            --secondary: #3d5a3d;
+            --accent: #6d4e2a;
+            --accent-light: #8d6e4a;
+            --accent-dark: #4d2e0a;
+            --bg-main: #f9f5e8;
+            --bg-card: #fdfdfb;
+            --bg-secondary: #2a3f2a;
+            --text-main: #1a1a18;
+            --text-light: #4a4a45;
+            --text-lighter: #6a6a65;
+            --border: #3d5a3d;
+            --border-light: #d4d0bb;
+            --shadow: rgba(42, 63, 42, 0.2);
         }
 
         * {
@@ -2599,6 +2617,16 @@
                                         <div class="theme-color" style="background: #1d5c2e;"></div>
                                     </div>
                                     <div class="theme-name">Соковита зелено-коричнева</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="nature-contrast" onclick="applyTheme('nature-contrast')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #f9f5e8;"></div>
+                                        <div class="theme-color" style="background: #6d4e2a;"></div>
+                                        <div class="theme-color" style="background: #2a3f2a;"></div>
+                                    </div>
+                                    <div class="theme-name">Природний контраст</div>
                                     <div class="theme-check">✓</div>
                                 </div>
                             </div>
