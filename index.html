@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.99</title>
+    <title>Поетичні роздуми 2</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -2749,7 +2749,7 @@
         window.applyTheme = async function(themeName) {
             console.log('🎨 Застосовую тему:', themeName);
             
-            // Застосовуємо тему локально
+            // Застосовуємо тему локально миттєво
             if (themeName === 'default') {
                 document.documentElement.removeAttribute('data-theme');
                 console.log('✓ Видалено атрибут data-theme (класична тема)');
@@ -2758,15 +2758,57 @@
                 console.log('✓ Встановлено data-theme:', document.documentElement.getAttribute('data-theme'));
             }
             
+            // Оновлюємо відображення
+            if (!window.siteSettings) window.siteSettings = {};
+            window.siteSettings.theme = themeName;
+            updateThemeCards();
+            
             // Зберігаємо в Firebase для всіх користувачів
             if (isFirebaseConfigured) {
                 try {
                     await set(ref(database, 'settings/theme'), themeName);
                     console.log(`✓ Тема збережена в Firebase: ${themeName}`);
-                    alert(`✅ Тема "${themeName}" застосована для всіх користувачів!`);
+                    
+                    const themeNames = {
+                        'default': 'Класична бежева',
+                        'green': 'Травянисто-зелена',
+                        'ocean': 'Морська синя',
+                        'lavender': 'Фіолетово-лавандова',
+                        'terracotta': 'Теракотово-рожева',
+                        'dark': 'Темна'
+                    };
+                    alert(`✅ Тема "${themeNames[themeName]}" успішно застосована для всіх користувачів!`);
                 } catch (error) {
                     console.error('❌ Помилка збереження теми:', error);
-                    alert('Помилка збереження теми. Перевірте підключення до Firebase.');
+                    
+                    // Показуємо детальну інструкцію
+                    if (confirm('⚠️ Тема застосована локально, але не збережена в Firebase.\n\nПоказати інструкцію з налаштування Firebase?')) {
+                        alert(`Для збереження теми для всіх користувачів:
+
+1. Перейдіть: https://console.firebase.google.com/
+2. Виберіть проект: poetry-blog-ff72f
+3. Realtime Database → Rules (вкладка)
+4. Додайте в правила доступу:
+
+{
+  "rules": {
+    "posts": {
+      ".read": true,
+      ".write": true
+    },
+    "settings": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
+
+5. Натисніть "Publish" (Опублікувати)
+6. Після цього спробуйте знову змінити тему
+
+⚠️ Увага: Це дозволяє всім читати/писати.
+Для продакшену використайте правила з авторизацією!`);
+                    }
                 }
             } else {
                 console.warn('⚠️ Firebase не налаштовано');
