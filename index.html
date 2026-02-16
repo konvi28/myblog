@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.12</title>
+    <title>Поетичні роздуми 2.13</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3677,22 +3677,27 @@ async function exportPostAsImage(post) {
         }
     }
     
+    // Отримуємо кольори з поточної теми
+    const rootStyles = getComputedStyle(document.documentElement);
     const colors = {
-        bgMain: '#faf8f3',
-        bgCard: '#ffffff',
-        primary: '#2c3e50',
-        accent: '#8b6f47',
-        textMain: '#1a1a1a',
-        textLight: '#666666'
+        bgMain: rootStyles.getPropertyValue('--bg-main').trim() || '#faf8f3',
+        bgCard: rootStyles.getPropertyValue('--bg-card').trim() || '#ffffff',
+        primary: rootStyles.getPropertyValue('--primary').trim() || '#2c3e50',
+        accent: rootStyles.getPropertyValue('--accent').trim() || '#8b6f47',
+        accentLight: rootStyles.getPropertyValue('--accent-light').trim() || '#b8956a',
+        textMain: rootStyles.getPropertyValue('--text-main').trim() || '#1a1a1a',
+        textLight: rootStyles.getPropertyValue('--text-light').trim() || '#666666'
     };
     
     // Фон
     ctx.fillStyle = colors.bgMain;
     ctx.fillRect(0, 0, width, height);
     
-    // Градієнт
+    // Градієнт з акцентним кольором теми
     const gradient = ctx.createRadialGradient(width * 0.2, height * 0.8, 0, width * 0.2, height * 0.8, width * 0.5);
-    gradient.addColorStop(0, 'rgba(139, 111, 71, 0.03)');
+    // Витягуємо RGB значення з hex або rgb формату
+    const accentRGB = hexToRgb(colors.accentLight) || {r: 139, g: 111, b: 71};
+    gradient.addColorStop(0, `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.03)`);
     gradient.addColorStop(1, 'transparent');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
@@ -3926,6 +3931,33 @@ function formatDateForImage(dateString) {
     const months = ['січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',
         'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'];
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+function hexToRgb(hex) {
+    // Якщо це вже rgb формат, парсимо його
+    if (hex.startsWith('rgb')) {
+        const match = hex.match(/\d+/g);
+        if (match && match.length >= 3) {
+            return {
+                r: parseInt(match[0]),
+                g: parseInt(match[1]),
+                b: parseInt(match[2])
+            };
+        }
+    }
+    
+    // Якщо hex формат
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    
+    const bigint = parseInt(hex, 16);
+    return {
+        r: (bigint >> 16) & 255,
+        g: (bigint >> 8) & 255,
+        b: bigint & 255
+    };
 }
 
 function downloadImage(blob, filename) {
