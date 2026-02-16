@@ -6,83 +6,113 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 1.98</title>
+    <title>Поетичні роздуми 1.99</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2c3e50;
+            --secondary: #34495e;
             --accent: #8b6f47;
             --accent-light: #b8956a;
+            --accent-dark: #6d5638;
             --bg-main: #faf8f3;
             --bg-card: #ffffff;
+            --bg-secondary: #f0ebe3;
             --text-main: #1a1a1a;
             --text-light: #666666;
+            --text-lighter: #999999;
             --border: #e8e4dc;
+            --border-light: #f5f0e8;
             --shadow: rgba(0, 0, 0, 0.08);
         }
 
         /* Травянисто-зелена тема */
         [data-theme="green"] {
             --primary: #2d5016;
+            --secondary: #3d6b1f;
             --accent: #6b8e23;
             --accent-light: #9acd32;
+            --accent-dark: #4a5f1a;
             --bg-main: #f5f9f0;
             --bg-card: #ffffff;
+            --bg-secondary: #e8f3e0;
             --text-main: #1a1a1a;
             --text-light: #5a6b4a;
+            --text-lighter: #7a8b6a;
             --border: #d4e7c5;
+            --border-light: #e8f3e0;
             --shadow: rgba(107, 142, 35, 0.1);
         }
 
         /* Морська синя тема */
         [data-theme="ocean"] {
             --primary: #1b4965;
+            --secondary: #2c6b8f;
             --accent: #5fa8d3;
             --accent-light: #90c2e7;
+            --accent-dark: #3d7a9f;
             --bg-main: #f0f7fb;
             --bg-card: #ffffff;
+            --bg-secondary: #e3f1f7;
             --text-main: #1a1a1a;
             --text-light: #567a92;
+            --text-lighter: #7a9ab0;
             --border: #d4e8f5;
+            --border-light: #e8f4fa;
             --shadow: rgba(95, 168, 211, 0.1);
         }
 
         /* Фіолетово-лавандова тема */
         [data-theme="lavender"] {
             --primary: #4a2c62;
+            --secondary: #5e3a7d;
             --accent: #8b5fb0;
             --accent-light: #b794cc;
+            --accent-dark: #6d4a89;
             --bg-main: #f8f5fb;
             --bg-card: #ffffff;
+            --bg-secondary: #f0e9f7;
             --text-main: #1a1a1a;
             --text-light: #6d5578;
+            --text-lighter: #8d7598;
             --border: #e6dced;
+            --border-light: #f2ebf5;
             --shadow: rgba(139, 95, 176, 0.1);
         }
 
         /* Теракотово-рожева тема */
         [data-theme="terracotta"] {
             --primary: #8b4513;
+            --secondary: #a0522d;
             --accent: #d2691e;
             --accent-light: #e9967a;
+            --accent-dark: #b35a15;
             --bg-main: #fdf7f4;
             --bg-card: #ffffff;
+            --bg-secondary: #f8ede7;
             --text-main: #1a1a1a;
             --text-light: #8b6854;
+            --text-lighter: #a88874;
             --border: #f0dfce;
+            --border-light: #f8ede7;
             --shadow: rgba(210, 105, 30, 0.1);
         }
 
         /* Темна тема */
         [data-theme="dark"] {
             --primary: #e8e6e3;
+            --secondary: #d0cec9;
             --accent: #c9a961;
             --accent-light: #e0c78a;
+            --accent-dark: #b08f4a;
             --bg-main: #1a1a1a;
             --bg-card: #2d2d2d;
+            --bg-secondary: #242424;
             --text-main: #e8e6e3;
             --text-light: #a8a8a8;
+            --text-lighter: #888888;
             --border: #404040;
+            --border-light: #353535;
             --shadow: rgba(0, 0, 0, 0.3);
         }
 
@@ -109,10 +139,11 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 80%, rgba(139, 111, 71, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 111, 71, 0.04) 0%, transparent 50%);
+                radial-gradient(circle at 20% 80%, var(--accent-light, rgba(139, 111, 71, 0.03)) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--accent-light, rgba(139, 111, 71, 0.04)) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
+            opacity: 0.3;
         }
 
         header {
@@ -2387,6 +2418,10 @@
     </div>
 
     <!-- Firebase SDK -->
+    <script>
+        // Глобальна змінна для header lock
+        window.headerLocked = false;
+    </script>
     <script type="module">
 
 		
@@ -2483,9 +2518,27 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
             window.posts = await loadPosts();
+            await loadGlobalTheme(); // Завантажуємо тему
             renderPublicPosts();
             initializePublicFilters();
             initFontSizeSlider();
+            
+            // Слухаємо зміни теми в реальному часі (після ініціалізації)
+            if (isFirebaseConfigured) {
+                onValue(ref(database, 'settings/theme'), (snapshot) => {
+                    if (snapshot.exists()) {
+                        const themeName = snapshot.val();
+                        if (themeName === 'default') {
+                            document.documentElement.removeAttribute('data-theme');
+                        } else {
+                            document.documentElement.setAttribute('data-theme', themeName);
+                        }
+                        if (!window.siteSettings) window.siteSettings = {};
+                        window.siteSettings.theme = themeName;
+                        console.log(`✓ Тема оновлена в реальному часі: ${themeName}`);
+                    }
+                });
+            }
         });
 
         // Font Size Control
@@ -2635,7 +2688,10 @@
             document.getElementById('themeSettingsView').style.display = 'none';
             
             document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
-            if (e) e.target.closest('a').classList.add('active');
+            if (e && e.target && e.target.closest) {
+                const link = e.target.closest('a');
+                if (link) link.classList.add('active');
+            }
             
             renderAdminPosts();
             initializeAdminTabs();
@@ -2648,7 +2704,10 @@
             document.getElementById('themeSettingsView').style.display = 'none';
             
             document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
-            if (e && e.target.closest('a')) e.target.closest('a').classList.add('active');
+            if (e && e.target && e.target.closest) {
+                const link = e.target.closest('a');
+                if (link) link.classList.add('active');
+            }
             
             if (!skipReset) {
                 resetEditor();
@@ -2663,14 +2722,22 @@
             document.getElementById('themeSettingsView').style.display = 'block';
             
             document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
-            if (e) e.target.closest('a').classList.add('active');
+            if (e && e.target && e.target.closest) {
+                const link = e.target.closest('a');
+                if (link) link.classList.add('active');
+            }
             
             // Відобразити активну тему
             updateThemeCards();
         }
 
         function updateThemeCards() {
-            const currentTheme = localStorage.getItem('siteTheme') || 'default';
+            // Отримуємо поточну тему (з Firebase якщо доступна)
+            let currentTheme = 'default';
+            if (window.siteSettings && window.siteSettings.theme) {
+                currentTheme = window.siteSettings.theme;
+            }
+            
             document.querySelectorAll('.theme-card').forEach(card => {
                 card.classList.remove('active');
                 if (card.dataset.theme === currentTheme) {
@@ -2679,33 +2746,59 @@
             });
         }
 
-        window.applyTheme = function(themeName) {
-            // Зберігаємо вибір теми
-            localStorage.setItem('siteTheme', themeName);
+        window.applyTheme = async function(themeName) {
+            console.log('🎨 Застосовую тему:', themeName);
             
-            // Застосовуємо тему
+            // Застосовуємо тему локально
             if (themeName === 'default') {
                 document.documentElement.removeAttribute('data-theme');
+                console.log('✓ Видалено атрибут data-theme (класична тема)');
             } else {
                 document.documentElement.setAttribute('data-theme', themeName);
+                console.log('✓ Встановлено data-theme:', document.documentElement.getAttribute('data-theme'));
+            }
+            
+            // Зберігаємо в Firebase для всіх користувачів
+            if (isFirebaseConfigured) {
+                try {
+                    await set(ref(database, 'settings/theme'), themeName);
+                    console.log(`✓ Тема збережена в Firebase: ${themeName}`);
+                    alert(`✅ Тема "${themeName}" застосована для всіх користувачів!`);
+                } catch (error) {
+                    console.error('❌ Помилка збереження теми:', error);
+                    alert('Помилка збереження теми. Перевірте підключення до Firebase.');
+                }
+            } else {
+                console.warn('⚠️ Firebase не налаштовано');
+                alert('⚠️ Firebase не налаштовано. Тема застосована тільки локально.');
             }
             
             // Оновлюємо відображення
+            if (!window.siteSettings) window.siteSettings = {};
+            window.siteSettings.theme = themeName;
             updateThemeCards();
-            
-            console.log(`Тема змінена на: ${themeName}`);
         }
 
-        // Завантажуємо збережену тему при старті
-        function loadSavedTheme() {
-            const savedTheme = localStorage.getItem('siteTheme');
-            if (savedTheme && savedTheme !== 'default') {
-                document.documentElement.setAttribute('data-theme', savedTheme);
+        // Завантажуємо тему з Firebase
+        async function loadGlobalTheme() {
+            if (isFirebaseConfigured) {
+                try {
+                    const themeRef = ref(database, 'settings/theme');
+                    const snapshot = await get(themeRef);
+                    if (snapshot.exists()) {
+                        const themeName = snapshot.val();
+                        if (themeName && themeName !== 'default') {
+                            document.documentElement.setAttribute('data-theme', themeName);
+                        }
+                        if (!window.siteSettings) window.siteSettings = {};
+                        window.siteSettings.theme = themeName;
+                        console.log(`✓ Завантажено глобальну тему: ${themeName}`);
+                    }
+                } catch (error) {
+                    console.error('Помилка завантаження теми:', error);
+                }
             }
         }
-
-        // Викликаємо при завантаженні
-        loadSavedTheme();
 
         function resetEditor() {
             document.getElementById('editorForm').reset();
@@ -3286,7 +3379,7 @@
         // Auto-collapse header on scroll
         let lastScrollTop = 0;
         window.addEventListener('scroll', () => {
-            if (headerLocked) return;
+            if (window.headerLocked) return;
 
             const header = document.getElementById('siteHeader');
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -3305,7 +3398,7 @@ function toggleHeader() {
     const toggle = document.getElementById('headerToggle');
 
     header.classList.toggle('expanded');
-    headerLocked = header.classList.contains('expanded');
+    window.headerLocked = header.classList.contains('expanded');
 
     toggle.textContent = header.classList.contains('expanded') ? '▲' : '▼';
 }
