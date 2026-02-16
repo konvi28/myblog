@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.11</title>
+    <title>Поетичні роздуми 2.14</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3707,15 +3707,25 @@ async function exportPostAsImage(post) {
     
     // Отримуємо кольори з поточної теми
     const rootStyles = getComputedStyle(document.documentElement);
-    const colors = {
-        bgMain: rootStyles.getPropertyValue('--bg-main').trim() || '#faf8f3',
-        bgCard: rootStyles.getPropertyValue('--bg-card').trim() || '#ffffff',
-        primary: rootStyles.getPropertyValue('--primary').trim() || '#2c3e50',
-        accent: rootStyles.getPropertyValue('--accent').trim() || '#8b6f47',
-        accentLight: rootStyles.getPropertyValue('--accent-light').trim() || '#b8956a',
-        textMain: rootStyles.getPropertyValue('--text-main').trim() || '#1a1a1a',
-        textLight: rootStyles.getPropertyValue('--text-light').trim() || '#666666'
+    
+    // Функція для отримання кольору з fallback
+    const getColor = (varName, fallback) => {
+        const value = rootStyles.getPropertyValue(varName).trim();
+        return value || fallback;
     };
+    
+    const colors = {
+        bgMain: getColor('--bg-main', '#faf8f3'),
+        bgCard: getColor('--bg-card', '#ffffff'),
+        primary: getColor('--primary', '#2c3e50'),
+        accent: getColor('--accent', '#8b6f47'),
+        accentLight: getColor('--accent-light', '#b8956a'),
+        textMain: getColor('--text-main', '#1a1a1a'),
+        textLight: getColor('--text-light', '#666666')
+    };
+    
+    // Логуємо для діагностики
+    console.log('🎨 Експорт з кольорами теми:', colors);
     
     // Фон
     ctx.fillStyle = colors.bgMain;
@@ -3962,7 +3972,12 @@ function formatDateForImage(dateString) {
 }
 
 function hexToRgb(hex) {
-    // Якщо це вже rgb формат, парсимо його
+    if (!hex) return {r: 139, g: 111, b: 71}; // Fallback
+    
+    // Очищаємо пробіли
+    hex = hex.trim();
+    
+    // Якщо це вже rgb/rgba формат
     if (hex.startsWith('rgb')) {
         const match = hex.match(/\d+/g);
         if (match && match.length >= 3) {
@@ -3976,8 +3991,16 @@ function hexToRgb(hex) {
     
     // Якщо hex формат
     hex = hex.replace('#', '');
+    
+    // Якщо короткий формат (наприклад #fff)
     if (hex.length === 3) {
         hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    
+    // Перевіряємо валідність hex
+    if (!/^[0-9A-Fa-f]{6}$/.test(hex)) {
+        console.warn('Invalid color format:', hex);
+        return {r: 139, g: 111, b: 71}; // Fallback
     }
     
     const bigint = parseInt(hex, 16);
