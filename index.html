@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.28</title>
+    <title>Поетичні роздуми 2.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -294,6 +294,24 @@
             --border: #6b9d7d;
             --border-light: #c9e8d0;
             --shadow: rgba(5, 31, 32, 0.15);
+        }
+
+        /* Свіжа троянда (60% світла, соковиті червоні відтінки) */
+        [data-theme="fresh-rose"] {
+            --primary: #2d0a0a;
+            --secondary: #3d1515;
+            --accent: #c73e3e;
+            --accent-light: #c73e3e;
+            --accent-dark: #8a2828;
+            --bg-main: #fde8e8;
+            --bg-card: #ffffff;
+            --bg-secondary: #f8d5d5;
+            --text-main: #2d0a0a;
+            --text-light: #5d2020;
+            --text-lighter: #c73e3e;
+            --border: #e8a8a8;
+            --border-light: #f8d5d5;
+            --shadow: rgba(45, 10, 10, 0.15);
         }
 
         * {
@@ -2689,6 +2707,16 @@
                                     <div class="theme-name">Лісова палітра</div>
                                     <div class="theme-check">✓</div>
                                 </div>
+
+                                <div class="theme-card" data-theme="fresh-rose" onclick="applyTheme('fresh-rose')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #fde8e8;"></div>
+                                        <div class="theme-color" style="background: #c73e3e;"></div>
+                                        <div class="theme-color" style="background: #2d0a0a;"></div>
+                                    </div>
+                                    <div class="theme-name">Свіжа троянда</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
                             </div>
 
                             <div class="theme-actions" style="margin-top: 2rem;">
@@ -3069,7 +3097,8 @@
                         'green-brown-vibrant': 'Соковита зелено-коричнева',
                         'nature-contrast': 'Природний контраст',
                         'nature-soft-contrast': 'М\'який природний контраст',
-                        'forest-palette': 'Лісова палітра'
+                        'forest-palette': 'Лісова палітра',
+                        'fresh-rose': 'Свіжа троянда'
                     };
                     alert(`✅ Тема "${themeNames[themeName]}" успішно застосована для всіх користувачів!`);
                 } catch (error) {
