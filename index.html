@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.2</title>
+    <title>Поетичні роздуми 2.21</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -312,6 +312,24 @@
             --border: #e8a8a8;
             --border-light: #f8d5d5;
             --shadow: rgba(45, 10, 10, 0.15);
+        }
+
+        /* Золоте барокко (розкішна літературна тема) */
+        [data-theme="golden-baroque"] {
+            --primary: #1a1410;
+            --secondary: #2d241d;
+            --accent: #d4a645;
+            --accent-light: #e8c875;
+            --accent-dark: #b8882a;
+            --bg-main: #fdfaf5;
+            --bg-card: #fffef9;
+            --bg-secondary: #f5eee0;
+            --text-main: #1a1410;
+            --text-light: #5d4a3a;
+            --text-lighter: #8d7a6a;
+            --border: #e8d8b8;
+            --border-light: #f5eee0;
+            --shadow: rgba(212, 166, 69, 0.2);
         }
 
         * {
@@ -2717,6 +2735,16 @@
                                     <div class="theme-name">Свіжа троянда</div>
                                     <div class="theme-check">✓</div>
                                 </div>
+
+                                <div class="theme-card" data-theme="golden-baroque" onclick="applyTheme('golden-baroque')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #fdfaf5;"></div>
+                                        <div class="theme-color" style="background: #d4a645;"></div>
+                                        <div class="theme-color" style="background: #1a1410;"></div>
+                                    </div>
+                                    <div class="theme-name">Золоте барокко</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
                             </div>
 
                             <div class="theme-actions" style="margin-top: 2rem;">
@@ -3098,7 +3126,8 @@
                         'nature-contrast': 'Природний контраст',
                         'nature-soft-contrast': 'М\'який природний контраст',
                         'forest-palette': 'Лісова палітра',
-                        'fresh-rose': 'Свіжа троянда'
+                        'fresh-rose': 'Свіжа троянда',
+                        'golden-baroque': 'Золоте барокко'
                     };
                     alert(`✅ Тема "${themeNames[themeName]}" успішно застосована для всіх користувачів!`);
                 } catch (error) {
