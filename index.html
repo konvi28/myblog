@@ -6,7 +6,7 @@
 	<link rel="icon" type="image/webp" href="logo.webp">
     <link rel="shortcut icon" type="image/webp" href="logo.webp">
     <link rel="apple-touch-icon" href="logo.webp">
-    <title>Поетичні роздуми 2.11</title>
+    <title>Поетичні роздуми 2.12</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -114,6 +114,24 @@
             --border: #404040;
             --border-light: #353535;
             --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Кавова темно-зелена тема з золотими акцентами */
+        [data-theme="coffee"] {
+            --primary: #1a3a3a;
+            --secondary: #234545;
+            --accent: #c9a961;
+            --accent-light: #e0c78a;
+            --accent-dark: #a08840;
+            --bg-main: #234545;
+            --bg-card: #2d5555;
+            --bg-secondary: #1f4040;
+            --text-main: #f5f0e8;
+            --text-light: #c9a961;
+            --text-lighter: #a08840;
+            --border: #3d6565;
+            --border-light: #2d5555;
+            --shadow: rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -2403,6 +2421,16 @@
                                         <div class="theme-color" style="background: #e8e6e3;"></div>
                                     </div>
                                     <div class="theme-name">Темна</div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+
+                                <div class="theme-card" data-theme="coffee" onclick="applyTheme('coffee')">
+                                    <div class="theme-preview">
+                                        <div class="theme-color" style="background: #234545;"></div>
+                                        <div class="theme-color" style="background: #c9a961;"></div>
+                                        <div class="theme-color" style="background: #f5f0e8;"></div>
+                                    </div>
+                                    <div class="theme-name">Кавова елегантність</div>
                                     <div class="theme-check">✓</div>
                                 </div>
                             </div>
